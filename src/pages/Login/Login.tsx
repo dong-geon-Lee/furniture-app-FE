@@ -54,9 +54,7 @@ const Login = () => {
         />
         <S.Link to="/">Forgot Password</S.Link>
         <S.Button>Log in</S.Button>
-        <S.H2 to="/" className="signup">
-          Sign up
-        </S.H2>
+        <S.H2 to="/signup">Sign up</S.H2>
       </S.Form>
     </S.Container>
   );

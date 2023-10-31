@@ -16,6 +16,8 @@ body {
   line-height: auto;
   list-style: none;
   border: none;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
