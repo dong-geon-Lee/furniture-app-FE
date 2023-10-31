@@ -23,3 +23,6 @@ export { default as bell } from "./bell.svg";
 export { default as marker } from "./marker 1.svg";
 export { default as home } from "./clarity_home-solid.svg";
 export { default as frame } from "./Frame 19.svg";
+
+export { default as product1 } from "./2681826.jpg";
+export { default as back } from "./back-svgrepo-com.svg";
