@@ -110,6 +110,7 @@ export const Input = styled(TextField)`
 export const Icons = styled(IconButton)``;
 
 export const Link = styled(LinkRoute)`
+  color: #303030;
   text-align: center;
   font-family: "Nunito Sans";
   font-size: 1.8rem;
@@ -142,11 +143,15 @@ export const Button = styled.button`
   }
 `;
 
-export const H2 = styled.h2`
+export const H2 = styled(LinkRoute)`
   color: #303030;
   text-align: center;
   font-family: "Nunito Sans";
   font-size: 1.8rem;
   font-weight: 600;
   line-height: normal;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-right: 2.4rem;
+  text-decoration: none;
 `;
