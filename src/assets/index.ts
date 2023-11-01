@@ -32,3 +32,12 @@ export { default as btn2 } from "./Group 23.svg";
 
 export { default as star2 } from "./star2.svg";
 export { default as markers } from "./Frame 61.svg";
+
+export { default as favor__desk } from "./desk-4.jpg";
+export { default as favor__desk2 } from "./desk-2.jpg";
+export { default as favor__desk3 } from "./desk-3.jpg";
+export { default as favor__desk4 } from "./desk-1.jpg";
+export { default as favor__desk5 } from "./desk-5.jpg";
+
+export { default as shopping } from "./shopping_bag icon.svg";
+export { default as xIcon } from "./Shape.svg";
