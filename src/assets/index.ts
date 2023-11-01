@@ -26,3 +26,9 @@ export { default as frame } from "./Frame 19.svg";
 
 export { default as product1 } from "./2681826.jpg";
 export { default as back } from "./back-svgrepo-com.svg";
+
+export { default as btn1 } from "./Group 15.svg";
+export { default as btn2 } from "./Group 23.svg";
+
+export { default as star2 } from "./star2.svg";
+export { default as markers } from "./Frame 61.svg";
