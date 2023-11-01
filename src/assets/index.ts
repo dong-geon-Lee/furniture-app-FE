@@ -41,3 +41,4 @@ export { default as favor__desk5 } from "./desk-5.jpg";
 
 export { default as shopping } from "./shopping_bag icon.svg";
 export { default as xIcon } from "./Shape.svg";
+export { default as back2 } from "./Frame 14.svg";
