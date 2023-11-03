@@ -1,19 +1,36 @@
 import styled from "styled-components";
 import { Link as LinkRoute } from "react-router-dom";
-import { FormControl, TextField, Typography, IconButton } from "@mui/material";
+import { TextField, Typography, IconButton } from "@mui/material";
 
 export const Container = styled.div`
   width: inherit;
   height: inherit;
   background-color: #fff;
+  border: 1px solid #e0e0e0;
 `;
 
 export const Div = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.4rem 1.45rem 1.2rem 1.99rem;
-  margin-bottom: 2.187rem;
+  &.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 1.45rem 1.2rem 1.99rem;
+    margin-bottom: 2.187rem;
+  }
+
+  &.header__logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3rem;
+  }
+
+  &.input__box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 3rem;
+  }
 `;
 
 export const Box = styled.div`
@@ -22,6 +39,7 @@ export const Box = styled.div`
   margin-top: 3rem;
   width: 21.6rem;
   height: 9.3rem;
+  margin-bottom: 2.5rem;
 `;
 
 export const P = styled.p`
@@ -59,7 +77,22 @@ export const H1 = styled.h1`
   }
 `;
 
-export const Form = styled(FormControl)`
+// export const Form = styled(FormControl)`
+//   width: 34.5rem;
+//   height: 43.7rem;
+//   flex-shrink: 0;
+//   background-color: #fff;
+//   box-shadow: 0px 7px 30px 0px rgba(138, 149, 158, 0.2);
+//   display: block;
+
+//   &.css-1nrlq1o-MuiFormControl-root {
+//     margin-top: 2.5rem;
+//     padding-left: 3rem;
+//   }
+
+// `;
+
+export const Form = styled.form`
   width: 34.5rem;
   height: 43.7rem;
   flex-shrink: 0;
@@ -67,10 +100,13 @@ export const Form = styled(FormControl)`
   box-shadow: 0px 7px 30px 0px rgba(138, 149, 158, 0.2);
   display: block;
 
-  &.css-1nrlq1o-MuiFormControl-root {
+  /* padding-left: 3rem; */
+
+  /* &.css-1nrlq1o-MuiFormControl-root {
     margin-top: 2.5rem;
     padding-left: 3rem;
-  }
+  } */
+  /* width: 100%; */
 `;
 
 export const Text = styled(Typography)`
@@ -103,7 +139,14 @@ export const Input = styled(TextField)`
 
   & .css-i4bv87-MuiSvgIcon-root {
     font-size: 2rem;
-    margin-right: 0.6rem;
+  }
+
+  & .css-i4bv87-MuiSvgIcon-root {
+    font-size: 2rem;
+  }
+
+  & button {
+    margin-right: 1.2rem;
   }
 `;
 
@@ -152,6 +195,16 @@ export const H2 = styled(LinkRoute)`
   line-height: normal;
   text-transform: uppercase;
   white-space: nowrap;
-  margin-right: 2.4rem;
+  /* margin-right: 2.4rem; */
   text-decoration: none;
+  width: 100%;
+`;
+
+export const Footer = styled.footer`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0;
 `;

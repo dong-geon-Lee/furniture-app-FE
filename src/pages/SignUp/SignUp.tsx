@@ -150,7 +150,7 @@ const SignUp = () => {
             }
           />
         </S.Div>
-        <S.Button>Sign Up</S.Button>
+        <S.Button type="submit">Sign Up</S.Button>
         <S.Footer>
           <S.H3> Already have account?</S.H3>
           <S.LinkText to="/login">SignIn</S.LinkText>

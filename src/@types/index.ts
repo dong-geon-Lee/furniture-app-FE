@@ -4,3 +4,8 @@ export interface IAuthProps {
   password: string;
   password2?: string;
 }
+
+export interface ILoginProps {
+  email: string;
+  password: string;
+}
