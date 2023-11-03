@@ -1,19 +1,35 @@
 import styled from "styled-components";
 import { Link as LinkRoute } from "react-router-dom";
-import { FormControl, TextField, Typography, IconButton } from "@mui/material";
+import { TextField, Typography, IconButton } from "@mui/material";
 
 export const Container = styled.div`
   width: inherit;
   height: inherit;
   background-color: #fff;
+  border: 1px solid #e0e0e0;
 `;
 
 export const Div = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.4rem 1.45rem 1.2rem 1.99rem;
-  margin-bottom: 2.187rem;
+  &.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 1.45rem 1.2rem 1.99rem;
+    margin-bottom: 2.187rem;
+  }
+
+  &.header__logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3rem;
+  }
+
+  &.input__box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export const Box = styled.div`
@@ -49,20 +65,24 @@ export const H1 = styled.h1`
   letter-spacing: 1.2px;
   line-height: normal;
   text-transform: uppercase;
+  margin-bottom: 2.5rem;
 `;
 
-export const Form = styled(FormControl)`
+export const Form = styled.form`
   width: 34.5rem;
-  height: 55rem;
+  height: 56rem;
   flex-shrink: 0;
   background-color: #fff;
   box-shadow: 0px 7px 30px 0px rgba(138, 149, 158, 0.2);
   display: block;
 
-  &.css-1nrlq1o-MuiFormControl-root {
+  padding-left: 3rem;
+
+  /* &.css-1nrlq1o-MuiFormControl-root {
     margin-top: 2.5rem;
     padding-left: 3rem;
-  }
+  } */
+  /* width: 100%; */
 `;
 
 export const Text = styled(Typography)`
@@ -83,7 +103,6 @@ export const Input = styled(TextField)`
 
   .css-1x51dt5-MuiInputBase-input-MuiInput-input {
     position: relative;
-
     font-size: 1.6rem;
   }
 
@@ -95,7 +114,10 @@ export const Input = styled(TextField)`
 
   & .css-i4bv87-MuiSvgIcon-root {
     font-size: 2rem;
-    margin-right: 0.6rem;
+  }
+
+  & button {
+    margin-right: 1.2rem;
   }
 `;
 
@@ -137,15 +159,14 @@ export const Button = styled.button`
 `;
 
 export const Footer = styled.div`
-  height: 1.9rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
   white-space: nowrap;
   width: 100%;
   margin-right: 7.3rem;
   margin-left: 4.3rem;
+  margin-bottom: 3.4rem;
 `;
 
 export const H3 = styled.h3`
@@ -168,4 +189,6 @@ export const LinkText = styled(LinkRoute)`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  text-transform: uppercase;
+  text-decoration: none;
 `;
