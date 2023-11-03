@@ -19,10 +19,9 @@ export const Img = styled.img`
 
 export const Div = styled.div`
   margin-left: 3rem;
-  margin-right: 4.1rem;
+  margin-right: 3rem;
   margin-top: 23.1rem;
   margin-bottom: 49.8rem;
-  width: 30.4rem;
 `;
 
 export const H1 = styled.h1`
@@ -57,16 +56,16 @@ export const P = styled.p`
 export const Button = styled.button`
   background-color: #242424;
   border-radius: 0.4rem;
-  width: 15.9rem;
+  width: 100%;
   height: 5.4rem;
   color: #fff;
   font-family: inherit;
   font-size: 1.8rem;
   font-weight: 600;
   border: none;
-  padding: 1.6rem 2.9rem;
+  padding: 1.6rem 3rem;
   display: block;
-  width: 100%;
   box-shadow: 0 0.8rem 3rem 0 rgba(48, 48, 48, 0.3);
   cursor: pointer;
+  margin-top: 24rem;
 `;
