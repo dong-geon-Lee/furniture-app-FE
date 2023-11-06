@@ -116,16 +116,15 @@ export const Box = styled.div`
   height: 9.3rem;
 `;
 
-export const Image = styled.div<IProps>`
+export const ProductImage = styled.div<IProps>`
   background: url(${(props) => props.$image});
-  width: 100%;
   background-repeat: no-repeat;
-  background-size: contain;
-  width: 44.9rem;
+  background-size: cover;
   height: 45.5rem;
-  margin: 0 5rem;
+  margin-left: 5rem;
   border-bottom-left-radius: 6rem;
   display: block;
+  background-position: left;
 `;
 
 export const Img = styled.img`
