@@ -1,15 +1,17 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
-import { useLocation } from "react-router-dom";
 
 const Product = () => {
+  const location = useLocation();
+  const items = location.state;
+
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
-  const location = useLocation();
 
-  const items = location.state;
-  console.log(items);
+  const navigate = useNavigate();
 
   return (
     <S.Container>
@@ -19,7 +21,12 @@ const Product = () => {
       </S.Div>
       <S.Div className="product__image">
         <S.ProductImage $image={items.imageURL} />
-        <S.Img src={A.back} alt="product1" className="product1" />
+        <S.Img
+          src={A.back}
+          alt="product1"
+          className="product1"
+          onClick={() => navigate("/home")}
+        />
       </S.Div>
       <S.Div className="product__info">
         <S.H1 className="product__title">{items.name}</S.H1>
