@@ -6,6 +6,7 @@ import Home from "./pages/Home/Home";
 import Product from "./pages/Product/Product";
 import Favorite from "./pages/Favorite/Favorite";
 import Carts from "./pages/Carts/Carts";
+import Admin from "./pages/Admin/Admin";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="home/:id" element={<Product />} />
         <Route path="likes" element={<Favorite />} />
         <Route path="carts" element={<Carts />} />
+        <Route path="admin" element={<Admin />} />
       </Routes>
     </div>
   );
