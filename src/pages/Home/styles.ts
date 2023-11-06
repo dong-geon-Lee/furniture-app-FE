@@ -131,6 +131,11 @@ export const GridLabel = styled.label`
   font-size: 1.4rem;
   font-weight: 400;
   line-height: normal;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const GridText = styled.h2`
@@ -144,6 +149,7 @@ export const GridText = styled.h2`
 export const GridImg = styled.img`
   width: 100%;
   height: 20rem;
+  cursor: pointer;
 `;
 
 export const NavBar = styled.nav`

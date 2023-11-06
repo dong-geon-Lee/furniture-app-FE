@@ -1,10 +1,40 @@
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+interface IProps {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  imageURL: string;
+}
 
 const Home = () => {
+  const [productItems, setProductItems] = useState<IProps[]>([]);
+
+  const navigate = useNavigate();
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/products");
+      const datas = response.data;
+      setProductItems(datas);
+    };
+    fetchData();
+  }, []);
+
+  const handleProductItem = (id: number) => {
+    const selectedItems = productItems.find((item) => item.id === id);
+    navigate(`/home/${id}`, { state: selectedItems });
+  };
+
+  console.log(productItems);
 
   return (
     <S.Container>
@@ -46,30 +76,19 @@ const Home = () => {
       </S.LogoBox>
 
       <S.Grid>
-        <S.GridItem>
-          <S.GridImg src={A.jonny} alt="jonny" />
-          <S.GridLabel>Black Simple Lamp</S.GridLabel>
-          <S.GridText>$ 12.00</S.GridText>
-          <S.GridLogo src={A.frame} alt="frame" />
-        </S.GridItem>
-        <S.GridItem>
-          <S.GridImg src={A.desk} alt="desk" />
-          <S.GridLabel>Minimal Stand</S.GridLabel>
-          <S.GridText>$ 25.00</S.GridText>
-          <S.GridLogo src={A.frame} alt="frame" />
-        </S.GridItem>
-        <S.GridItem>
-          <S.GridImg src={A.desk2} alt="desk2" />
-          <S.GridLabel>Coffee Chair</S.GridLabel>
-          <S.GridText>$ 20.00</S.GridText>
-          <S.GridLogo src={A.frame} alt="frame" />
-        </S.GridItem>
-        <S.GridItem>
-          <S.GridImg src={A.desk3} alt="desk3" />
-          <S.GridLabel>Simple Desk</S.GridLabel>
-          <S.GridText>$ 50.00</S.GridText>
-          <S.GridLogo src={A.frame} alt="frame" />
-        </S.GridItem>
+        {productItems.map((item) => (
+          <S.GridItem key={item.id}>
+            <S.GridImg
+              src={item.imageURL}
+              onClick={() => handleProductItem(item.id)}
+            />
+            <S.GridLabel onClick={() => handleProductItem(item.id)}>
+              {item.name}
+            </S.GridLabel>
+            <S.GridText>$ {item.price}</S.GridText>
+            <S.GridLogo src={A.frame} alt="frame" />
+          </S.GridItem>
+        ))}
       </S.Grid>
 
       <S.NavBar>
@@ -91,3 +110,30 @@ const Home = () => {
 };
 
 export default Home;
+
+//  <S.Grid>
+//   <S.GridItem>
+//     <S.GridImg src={A.jonny} alt="jonny" />
+//     <S.GridLabel>Black Simple Lamp</S.GridLabel>
+//     <S.GridText>$ 12.00</S.GridText>
+//     <S.GridLogo src={A.frame} alt="frame" />
+//   </S.GridItem>
+//   <S.GridItem>
+//     <S.GridImg src={A.desk} alt="desk" />
+//     <S.GridLabel>Minimal Stand</S.GridLabel>
+//     <S.GridText>$ 25.00</S.GridText>
+//     <S.GridLogo src={A.frame} alt="frame" />
+//   </S.GridItem>
+//   <S.GridItem>
+//     <S.GridImg src={A.desk2} alt="desk2" />
+//     <S.GridLabel>Coffee Chair</S.GridLabel>
+//     <S.GridText>$ 20.00</S.GridText>
+//     <S.GridLogo src={A.frame} alt="frame" />
+//   </S.GridItem>
+//   <S.GridItem>
+//     <S.GridImg src={A.desk3} alt="desk3" />
+//     <S.GridLabel>Simple Desk</S.GridLabel>
+//     <S.GridText>$ 50.00</S.GridText>
+//     <S.GridLogo src={A.frame} alt="frame" />
+//   </S.GridItem>
+// </S.Grid>
