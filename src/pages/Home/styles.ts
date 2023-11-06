@@ -117,6 +117,18 @@ export const Grid = styled.div`
   margin-top: 4.1rem;
   padding: 0 2rem;
   gap: 2.5rem;
+
+  height: 53.1rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0.24rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+  }
 `;
 
 export const GridItem = styled.div`

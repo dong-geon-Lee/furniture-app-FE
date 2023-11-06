@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import axios from "axios";
+
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 interface IProps {
   id: number;
@@ -33,8 +35,6 @@ const Home = () => {
     const selectedItems = productItems.find((item) => item.id === id);
     navigate(`/home/${id}`, { state: selectedItems });
   };
-
-  console.log(productItems);
 
   return (
     <S.Container>
