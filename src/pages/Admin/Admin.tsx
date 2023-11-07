@@ -80,11 +80,10 @@ const Admin = () => {
 
       return () => clearTimeout(timeoutId);
     }
-  });
+  }, [activeAlert]);
 
   return (
     <S.Container>
-      {/* <S.Button onClick={handleOpen}>Show backdrop</S.Button> */}
       <S.H1 variant="h4" sx={{ mb: "1.4rem" }}>
         상품 업로드
       </S.H1>
