@@ -1,16 +1,22 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
-import * as S from "./styles";
 import axios from "axios";
 
+import * as S from "./styles";
+import { IProductProps } from "../../@types";
+import { Alert, Backdrop, CircularProgress } from "@mui/material";
+
 const Admin = () => {
-  const [items, setItems] = useState([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [productInfo, setProductInfo] = useState({
+  const [productInfo, setProductInfo] = useState<IProductProps>({
     name: "",
     description: "",
     price: "",
     imageURL: "",
+    category: "",
   });
+
+  const [open, setOpen] = useState(false);
+  const [activeAlert, setActiveAlert] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductInfo({ ...productInfo, [e.target.name]: e.target.value });
@@ -23,12 +29,10 @@ const Admin = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setOpen(true);
 
     const formData = new FormData();
-    // formData.append("name", JSON.strproductInfo.name);
-    // formData.append("description", productInfo.description);
-    // formData.append("price", productInfo.price);
-    formData.append("file", selectedFile);
+    if (selectedFile) formData.append("file", selectedFile);
 
     try {
       const data = await axios.post("http://localhost:5000/upload", formData, {
@@ -42,78 +46,126 @@ const Admin = () => {
         imageURL: `https://furniture-bucket.s3.ap-northeast-2.amazonaws.com/${data.data?.id}`, // 이미지 파일의 이름을 imageURL로 설정
       };
 
-      const response = await axios.post(
-        "http://localhost:5000/products",
-        productData
-      );
+      await axios.post("http://localhost:5000/products", productData);
 
-      console.log(response.data);
+      setSelectedFile(null);
+      setProductInfo({
+        name: "",
+        description: "",
+        price: "",
+        imageURL: "",
+        category: "",
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const handleUpload = async () => {
-  //   if (selectedFile) {
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
+  useEffect(() => {
+    if (open) {
+      const timeoutId = setTimeout(() => {
+        setOpen(false);
+        setActiveAlert(true);
+      }, 2500);
 
-  //     try {
-  //       await axios.post("http://localhost:5000/upload", formData, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-
-  //       alert("이미지가 업로드되었습니다");
-  //     } catch (error) {
-  //       alert("이미지 업로드에 실패했습니다");
-  //     }
-  //   }
-  // };
+      return () => clearTimeout(timeoutId);
+    }
+  }, [open]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/products");
-      const datas = response.data;
-      setItems(datas);
-    };
+    if (activeAlert) {
+      const timeoutId = setTimeout(() => {
+        setActiveAlert(false);
+      }, 3500);
 
-    fetchData();
-  }, [selectedFile]);
+      return () => clearTimeout(timeoutId);
+    }
+  });
 
   return (
-    <S.Container
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3,1fr)",
-        alignContent: "center",
-      }}
-    >
-      <form onSubmit={onSubmit}>
-        <input type="file" onChange={onImageChange} />
-        {/* <button onClick={handleUpload}>이미지업로드</button> */}
+    <S.Container>
+      {/* <S.Button onClick={handleOpen}>Show backdrop</S.Button> */}
+      <S.H1 variant="h4" sx={{ mb: "1.4rem" }}>
+        상품 업로드
+      </S.H1>
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={open}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {activeAlert && (
+        <Backdrop
+          sx={{
+            color: "#fff",
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+          open={activeAlert}
+        >
+          <Alert severity="success" sx={{ width: "23rem", p: "1.6rem" }}>
+            <S.H1 variant="h4" sx={{ textAlign: "center", width: "100%" }}>
+              상품 업로드 완료!
+            </S.H1>
+          </Alert>
+        </Backdrop>
+      )}
+      <S.Form
+        onSubmit={onSubmit}
+        component="form"
+        noValidate
+        autoComplete="off"
+      >
+        <S.Input type="file" onChange={onImageChange} />
+        <S.Div>
+          <S.Input
+            type="text"
+            name="name"
+            value={productInfo.name}
+            onChange={onChange}
+            required
+            label="상품명"
+            size="medium"
+            margin="dense"
+            variant="outlined"
+          />
+        </S.Div>
+        <S.Div>
+          <S.Input
+            type="text"
+            name="description"
+            value={productInfo.description}
+            onChange={onChange}
+            required
+            label="상세설명"
+            size="medium"
+            margin="dense"
+            variant="outlined"
+            multiline
+            maxRows={4}
+          />
+        </S.Div>
+        <S.Div>
+          <S.Input
+            type="text"
+            name="price"
+            value={productInfo.price}
+            onChange={onChange}
+            required
+            label="가격"
+            size="small"
+            margin="dense"
+            variant="outlined"
+          />
+        </S.Div>
+        <S.Button type="submit" variant="contained">
+          제출하기
+        </S.Button>
+      </S.Form>
 
-        <input
-          type="text"
-          name="name"
-          value={productInfo.name}
-          onChange={onChange}
-        />
-        <input
-          type="text"
-          name="description"
-          value={productInfo.description}
-          onChange={onChange}
-        />
-        <input
-          type="text"
-          name="price"
-          value={productInfo.price}
-          onChange={onChange}
-        />
-        <button type="submit">제출하기</button>
-      </form>
-
-      {items
+      {/* {items
         .slice()
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
         .map((item) => (
@@ -129,9 +181,26 @@ const Admin = () => {
               <h2>{item.price}</h2>
             </div>
           </div>
-        ))}
+        ))} */}
     </S.Container>
   );
 };
 
 export default Admin;
+
+// const handleUpload = async () => {
+//   if (selectedFile) {
+//     const formData = new FormData();
+//     formData.append("file", selectedFile);
+
+//     try {
+//       await axios.post("http://localhost:5000/upload", formData, {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       });
+
+//       alert("이미지가 업로드되었습니다");
+//     } catch (error) {
+//       alert("이미지 업로드에 실패했습니다");
+//     }
+//   }
+// };
