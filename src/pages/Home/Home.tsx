@@ -1,24 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { IProductProps } from "../../@types";
 import axios from "axios";
+
+import ProductButton from "../../components/ProductButton/ProductButton";
 
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
 
-interface IProps {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  imageURL: string;
-  category: string;
-}
-
 const Home = () => {
-  const [products, setProducts] = useState<IProps[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<IProps[]>([]);
+  const [products, setProducts] = useState<IProductProps[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const navigate = useNavigate();
@@ -77,41 +71,36 @@ const Home = () => {
       </S.ImgBox>
 
       <S.LogoBox>
-        <S.Box
-          onClick={() => handleCategorySelect("All")}
-          className={selectedCategory === "All" ? "active" : ""}
-        >
-          <S.Logo src={A.star} alt="star" />
-          <S.Text>Popular</S.Text>
-        </S.Box>
-        <S.Box
-          onClick={() => handleCategorySelect("Chair")}
-          className={selectedCategory === "Chair" ? "active" : ""}
-        >
-          <S.Logo src={A.chair} alt="chair" />
-          <S.Text>Chair</S.Text>
-        </S.Box>
-        <S.Box
-          onClick={() => handleCategorySelect("Table")}
-          className={selectedCategory === "Table" ? "active" : ""}
-        >
-          <S.Logo src={A.table} alt="table" />
-          <S.Text>Table</S.Text>
-        </S.Box>
-        <S.Box
-          onClick={() => handleCategorySelect("Armchair")}
-          className={selectedCategory === "Armchair" ? "active" : ""}
-        >
-          <S.Logo src={A.sofa} alt="sofa" />
-          <S.Text>Armchair</S.Text>
-        </S.Box>
-        <S.Box
-          onClick={() => handleCategorySelect("Bed")}
-          className={selectedCategory === "Bed" ? "active" : ""}
-        >
-          <S.Logo src={A.bed} alt="bed" />
-          <S.Text>Bed</S.Text>
-        </S.Box>
+        <ProductButton
+          handleCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+          image={A.star}
+          categoryName="All"
+        />
+        <ProductButton
+          handleCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+          image={A.chair}
+          categoryName="Chair"
+        />
+        <ProductButton
+          handleCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+          image={A.table}
+          categoryName="Table"
+        />
+        <ProductButton
+          handleCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+          image={A.sofa}
+          categoryName="Armchair"
+        />
+        <ProductButton
+          handleCategorySelect={handleCategorySelect}
+          selectedCategory={selectedCategory}
+          image={A.bed}
+          categoryName="Bed"
+        />
       </S.LogoBox>
 
       <S.Grid>
@@ -151,30 +140,3 @@ const Home = () => {
 };
 
 export default Home;
-
-//  <S.Grid>
-//   <S.GridItem>
-//     <S.GridImg src={A.jonny} alt="jonny" />
-//     <S.GridLabel>Black Simple Lamp</S.GridLabel>
-//     <S.GridText>$ 12.00</S.GridText>
-//     <S.GridLogo src={A.frame} alt="frame" />
-//   </S.GridItem>
-//   <S.GridItem>
-//     <S.GridImg src={A.desk} alt="desk" />
-//     <S.GridLabel>Minimal Stand</S.GridLabel>
-//     <S.GridText>$ 25.00</S.GridText>
-//     <S.GridLogo src={A.frame} alt="frame" />
-//   </S.GridItem>
-//   <S.GridItem>
-//     <S.GridImg src={A.desk2} alt="desk2" />
-//     <S.GridLabel>Coffee Chair</S.GridLabel>
-//     <S.GridText>$ 20.00</S.GridText>
-//     <S.GridLogo src={A.frame} alt="frame" />
-//   </S.GridItem>
-//   <S.GridItem>
-//     <S.GridImg src={A.desk3} alt="desk3" />
-//     <S.GridLabel>Simple Desk</S.GridLabel>
-//     <S.GridText>$ 50.00</S.GridText>
-//     <S.GridLogo src={A.frame} alt="frame" />
-//   </S.GridItem>
-// </S.Grid>
