@@ -1,24 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
+import Header from "../../components/Header/Header";
+
 import * as S from "./styles";
 import * as A from "../../assets";
-import * as C from "../../constants";
 
 const Product = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const items = location.state;
 
-  const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
-  const koreanTime = koreanTimeFormatter.format(new Date());
-
-  const navigate = useNavigate();
-
   return (
     <S.Container>
-      <S.Div className="header">
-        <S.P className="time">{koreanTime}</S.P>
-        <S.Img src={A.container} alt="container" className="container1" />
-      </S.Div>
+      <Header activeClass="header" />
+
       <S.Div className="product__image">
         <S.ProductImage $image={items.imageURL} />
         <S.Img

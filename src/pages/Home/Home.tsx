@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { IProductProps } from "../../@types";
 import axios from "axios";
 
 import ProductButton from "../../components/ProductButton/ProductButton";
+import Header from "../../components/Header/Header";
 
 import * as S from "./styles";
 import * as A from "../../assets";
-import * as C from "../../constants";
 
 const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -16,8 +15,6 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const navigate = useNavigate();
-  const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
-  const koreanTime = koreanTimeFormatter.format(new Date());
 
   const handleProductItem = (id: number) => {
     const selectedItems = products.find((item) => item.id === id);
@@ -56,10 +53,7 @@ const Home = () => {
 
   return (
     <S.Container>
-      <S.Div>
-        <S.P>{koreanTime}</S.P>
-        <S.Img src={A.container} alt="container" />
-      </S.Div>
+      <Header activeClass="header__normal" />
 
       <S.ImgBox>
         <S.Img src={A.search} alt="search" />
