@@ -1,9 +1,15 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import axios from "axios";
 
-import * as S from "./styles";
 import { IProductProps } from "../../@types";
+
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Alert, Backdrop, CircularProgress } from "@mui/material";
+
+import * as S from "./styles";
 
 const Admin = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -20,6 +26,10 @@ const Admin = () => {
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductInfo({ ...productInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryOnChange = (e: SelectChangeEvent) => {
+    setProductInfo({ ...productInfo, category: e.target.value });
   };
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +54,7 @@ const Admin = () => {
         description: productInfo.description,
         price: productInfo.price,
         imageURL: `https://furniture-bucket.s3.ap-northeast-2.amazonaws.com/${data.data?.id}`, // 이미지 파일의 이름을 imageURL로 설정
+        category: productInfo.category,
       };
 
       await axios.post("http://localhost:5000/products", productData);
@@ -159,28 +170,27 @@ const Admin = () => {
             variant="outlined"
           />
         </S.Div>
+        <S.Div>
+          <FormControl fullWidth>
+            <InputLabel required>카테고리</InputLabel>
+            <Select
+              name="category"
+              value={productInfo.category}
+              label="카테고리"
+              onChange={handleCategoryOnChange}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Chair">Chair</MenuItem>
+              <MenuItem value="Table">Table</MenuItem>
+              <MenuItem value="Armchair">Armchair</MenuItem>
+              <MenuItem value="Bed">Bed</MenuItem>
+            </Select>
+          </FormControl>
+        </S.Div>
         <S.Button type="submit" variant="contained">
           제출하기
         </S.Button>
       </S.Form>
-
-      {/* {items
-        .slice()
-        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-        .map((item) => (
-          <div key={item.id} style={{ width: "10rem", height: "10rem" }}>
-            <img
-              src={item.imageURL}
-              alt="image"
-              style={{ width: "100%", height: "100%" }}
-            />
-            <div>
-              <h1>{item.name}</h1>
-              <h2>{item.description}</h2>
-              <h2>{item.price}</h2>
-            </div>
-          </div>
-        ))} */}
     </S.Container>
   );
 };
@@ -203,3 +213,23 @@ export default Admin;
 //     }
 //   }
 // };
+
+{
+  /* {items
+        .slice()
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+        .map((item) => (
+          <div key={item.id} style={{ width: "10rem", height: "10rem" }}>
+            <img
+              src={item.imageURL}
+              alt="image"
+              style={{ width: "100%", height: "100%" }}
+            />
+            <div>
+              <h1>{item.name}</h1>
+              <h2>{item.description}</h2>
+              <h2>{item.price}</h2>
+            </div>
+          </div>
+        ))} */
+}
