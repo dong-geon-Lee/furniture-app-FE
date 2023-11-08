@@ -9,6 +9,7 @@ import Header from "../../components/Header/Header";
 
 import * as S from "./styles";
 import * as A from "../../assets";
+import Navigation from "../../components/Navigation/Navigation";
 
 const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -117,7 +118,7 @@ const Home = () => {
       </S.Grid>
 
       <S.NavBar>
-        <S.NavBox>
+        {/* <S.NavBox>
           <S.ImgLogo src={A.home} alt="home" />
         </S.NavBox>
         <S.NavBox>
@@ -128,7 +129,8 @@ const Home = () => {
         </S.NavBox>
         <S.NavBox>
           <S.ImgLogo src={A.bi} alt="bi" />
-        </S.NavBox>
+        </S.NavBox> */}
+        <Navigation />
       </S.NavBar>
     </S.Container>
   );
