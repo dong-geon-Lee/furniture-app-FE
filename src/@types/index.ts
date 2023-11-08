@@ -11,7 +11,7 @@ export interface ILoginProps {
 }
 
 export interface IProductProps {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   price: string;
