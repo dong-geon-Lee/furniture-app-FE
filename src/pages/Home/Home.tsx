@@ -13,28 +13,52 @@ interface IProps {
   description: string;
   price: string;
   imageURL: string;
+  category: string;
 }
 
 const Home = () => {
-  const [productItems, setProductItems] = useState<IProps[]>([]);
+  const [products, setProducts] = useState<IProps[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<IProps[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const navigate = useNavigate();
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
 
+  const handleProductItem = (id: number) => {
+    const selectedItems = products.find((item) => item.id === id);
+    navigate(`/home/${id}`, { state: selectedItems });
+  };
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    setFilteredProducts(
+      category === "All"
+        ? products
+        : products.filter((product) => product.category === category)
+    );
+  };
+
+  useEffect(() => {
+    const filtered =
+      selectedCategory === "All"
+        ? products
+        : products.filter((product) => product.category === selectedCategory);
+    setFilteredProducts(filtered);
+  }, [selectedCategory, products]);
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/products");
-      const datas = response.data;
-      setProductItems(datas);
+      try {
+        const response = await axios.get("http://localhost:5000/products");
+        const datas = response.data;
+        setProducts(datas);
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchData();
   }, []);
-
-  const handleProductItem = (id: number) => {
-    const selectedItems = productItems.find((item) => item.id === id);
-    navigate(`/home/${id}`, { state: selectedItems });
-  };
 
   return (
     <S.Container>
@@ -53,39 +77,56 @@ const Home = () => {
       </S.ImgBox>
 
       <S.LogoBox>
-        <S.Box>
-          <S.Logo src={A.star} alt="star" className="star" />
+        <S.Box
+          onClick={() => handleCategorySelect("All")}
+          className={selectedCategory === "All" ? "active" : ""}
+        >
+          <S.Logo src={A.star} alt="star" />
           <S.Text>Popular</S.Text>
         </S.Box>
-        <S.Box>
+        <S.Box
+          onClick={() => handleCategorySelect("Chair")}
+          className={selectedCategory === "Chair" ? "active" : ""}
+        >
           <S.Logo src={A.chair} alt="chair" />
           <S.Text>Chair</S.Text>
         </S.Box>
-        <S.Box>
+        <S.Box
+          onClick={() => handleCategorySelect("Table")}
+          className={selectedCategory === "Table" ? "active" : ""}
+        >
           <S.Logo src={A.table} alt="table" />
           <S.Text>Table</S.Text>
         </S.Box>
-        <S.Box>
+        <S.Box
+          onClick={() => handleCategorySelect("Armchair")}
+          className={selectedCategory === "Armchair" ? "active" : ""}
+        >
           <S.Logo src={A.sofa} alt="sofa" />
           <S.Text>Armchair</S.Text>
         </S.Box>
-        <S.Box>
+        <S.Box
+          onClick={() => handleCategorySelect("Bed")}
+          className={selectedCategory === "Bed" ? "active" : ""}
+        >
           <S.Logo src={A.bed} alt="bed" />
           <S.Text>Bed</S.Text>
         </S.Box>
       </S.LogoBox>
 
       <S.Grid>
-        {productItems.map((item) => (
-          <S.GridItem key={item.id}>
+        {filteredProducts.map((product) => (
+          <S.GridItem key={product.id}>
             <S.GridImg
-              src={item.imageURL}
-              onClick={() => handleProductItem(item.id)}
+              src={product.imageURL}
+              alt={product.name}
+              role="button"
+              onClick={() => handleProductItem(product.id)}
             />
-            <S.GridLabel onClick={() => handleProductItem(item.id)}>
-              {item.name}
+            <S.GridLabel onClick={() => handleProductItem(product.id)}>
+              {product.name}
             </S.GridLabel>
-            <S.GridText>$ {item.price}</S.GridText>
+            <S.GridText>$ {product.price}</S.GridText>
             <S.GridLogo src={A.frame} alt="frame" />
           </S.GridItem>
         ))}
