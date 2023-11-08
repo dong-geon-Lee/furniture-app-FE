@@ -3,9 +3,7 @@ import { useState } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
-
 import FavoriteIcon from "@mui/icons-material/Favorite";
-// import BookmarkIcon from '@mui/icons-material/Bookmark';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 

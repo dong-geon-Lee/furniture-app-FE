@@ -6,10 +6,10 @@ import axios from "axios";
 
 import ProductButton from "../../components/ProductButton/ProductButton";
 import Header from "../../components/Header/Header";
+import Navigation from "../../components/Navigation/Navigation";
 
 import * as S from "./styles";
 import * as A from "../../assets";
-import Navigation from "../../components/Navigation/Navigation";
 
 const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -18,7 +18,7 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  const handleProductItem = (id: number) => {
+  const handleProductItem = (id?: number) => {
     const selectedItems = products.find((item) => item.id === id);
     navigate(`/home/${id}`, { state: selectedItems });
   };
