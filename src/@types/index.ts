@@ -11,9 +11,17 @@ export interface ILoginProps {
 }
 
 export interface IProductProps {
+  id: number;
   name: string;
   description: string;
   price: string;
   imageURL: string;
   category: string;
+}
+
+export interface IPrductButtonProps {
+  handleCategorySelect: (category: string) => void;
+  selectedCategory: string;
+  image: string;
+  categoryName: string;
 }
