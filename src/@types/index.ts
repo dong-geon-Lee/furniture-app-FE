@@ -25,3 +25,7 @@ export interface IPrductButtonProps {
   image: string;
   categoryName: string;
 }
+
+export interface IHeaderClassProps {
+  activeClass: string;
+}
