@@ -63,7 +63,7 @@ export const LogoBox = styled.div`
   gap: 2.5rem;
   border-radius: 12px;
 
-  .star {
+  & .active {
     background: #303030;
   }
 `;
@@ -79,7 +79,7 @@ export const Box = styled.div`
   align-items: center;
   position: relative;
 
-  &:nth-child(1) {
+  &.active {
     background: #303030;
   }
 

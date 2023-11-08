@@ -55,9 +55,12 @@ export const Div = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-top: 2rem;
-    width: 100%;
+    /* width: 100%; */
     height: 6rem;
     gap: 1.5rem;
+    position: fixed;
+    bottom: 18.5rem;
+    width: 32.3rem;
   }
 `;
 
