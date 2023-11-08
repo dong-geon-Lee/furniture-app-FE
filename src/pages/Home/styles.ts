@@ -8,11 +8,13 @@ export const Container = styled.div`
 `;
 
 export const Div = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.4rem 1.45rem 1.2rem 1.99rem;
-  margin-bottom: 2.187rem;
+  &.header__normal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 1.45rem 1.2rem 1.99rem;
+    margin-bottom: 2.187rem;
+  }
 `;
 
 export const P = styled.p`
