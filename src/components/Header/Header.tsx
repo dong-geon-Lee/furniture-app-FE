@@ -1,7 +1,8 @@
+import { IHeaderClassProps } from "../../@types";
+
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
-import { IHeaderClassProps } from "../../@types";
 
 const Header = ({ activeClass }: IHeaderClassProps) => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
