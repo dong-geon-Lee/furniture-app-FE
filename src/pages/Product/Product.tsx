@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Header from "../../components/Header/Header";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import * as S from "./styles";
 import * as A from "../../assets";
@@ -48,7 +49,14 @@ const Product = () => {
           </S.P>
           <S.Div className="product__click">
             <S.Button className="product__markers">
-              <S.Img src={A.markers} alt="markers" className="markers" />
+              <FavoriteBorderIcon
+                sx={{
+                  width: "2.5rem",
+                  height: "2.5rem",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
             </S.Button>
             <S.Button className="product__cart">Add to cart</S.Button>
           </S.Div>

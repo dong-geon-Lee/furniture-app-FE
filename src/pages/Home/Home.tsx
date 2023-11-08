@@ -56,7 +56,6 @@ const Home = () => {
   return (
     <S.Container>
       <Header activeClass="header__normal" />
-
       <S.ImgBox>
         <S.Img src={A.search} alt="search" />
         <S.TextBox>
@@ -117,21 +116,7 @@ const Home = () => {
         ))}
       </S.Grid>
 
-      <S.NavBar>
-        {/* <S.NavBox>
-          <S.ImgLogo src={A.home} alt="home" />
-        </S.NavBox>
-        <S.NavBox>
-          <S.ImgLogo src={A.marker} alt="marker" />
-        </S.NavBox>
-        <S.NavBox>
-          <S.ImgLogo src={A.bell} alt="bell" />
-        </S.NavBox>
-        <S.NavBox>
-          <S.ImgLogo src={A.bi} alt="bi" />
-        </S.NavBox> */}
-        <Navigation />
-      </S.NavBar>
+      <Navigation />
     </S.Container>
   );
 };

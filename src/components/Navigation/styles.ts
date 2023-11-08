@@ -1,6 +1,13 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  height: 5.8rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 -0.2rem 5rem 0 rgba(0, 0, 0, 0.05);
+`;
 
 export const NavBar = styled.nav`
   height: 5.8rem;
