@@ -3,23 +3,7 @@ import styled from "styled-components";
 import { Button as MuiButton, Box as MuiBox } from "@mui/material";
 
 export const Container = styled.div`
-  /* width: 100vw;
-  height: 100vh; */
-  /* width: 100%;
-  height: 100%; */
-  /* position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; */
-
-  /* & .css-wnkddu-MuiPaper-root-MuiAlert-root {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-  } */
+  margin-bottom: 3.6rem;
 `;
 
 export const H1 = styled(Typography)``;
