@@ -16,7 +16,7 @@ const Product = () => {
       <Header activeClass="header" />
 
       <S.Div className="product__image">
-        <S.ProductImage $image={items.imageURL} />
+        <S.ProductImage $image={items?.imageURL} />
         <S.Img
           src={A.back}
           alt="product1"
@@ -25,9 +25,9 @@ const Product = () => {
         />
       </S.Div>
       <S.Div className="product__info">
-        <S.H1 className="product__title">{items.name}</S.H1>
+        <S.H1 className="product__title">{items?.name}</S.H1>
         <S.Div className="product__box">
-          <S.H1 className="product__price">$ {items.price}</S.H1>
+          <S.H1 className="product__price">$ {items?.price}</S.H1>
           <S.Div className="product__qty">
             <S.Button className="product__count">
               <S.Img src={A.btn1} alt="btn1" />
@@ -45,7 +45,7 @@ const Product = () => {
         </S.Div>
         <S.Div>
           <S.P className="description">
-            {items.name} {items.description}
+            {items?.name} {items?.description}
           </S.P>
           <S.Div className="product__click">
             <S.Button className="product__markers">
