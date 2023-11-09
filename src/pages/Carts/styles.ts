@@ -5,6 +5,14 @@ export const Container = styled.div`
   height: inherit;
   background-color: #fff;
   border: 1px solid #e0e0e0;
+
+  /* & .css-wnkddu-MuiPaper-root-MuiAlert-root {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+  } */
 `;
 
 export const Div = styled.div`
@@ -61,7 +69,7 @@ export const Div = styled.div`
 
   &.cart__results {
     position: fixed;
-    bottom: 5rem;
+    bottom: 18rem;
     height: 11rem;
   }
 

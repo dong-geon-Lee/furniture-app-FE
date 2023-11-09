@@ -103,21 +103,6 @@ const Carts = () => {
           <S.Button className="cart__checkout">Check out</S.Button>
         </S.Div>
       </S.Section>
-
-      {/* <S.Nav className="nav">
-        <S.Div className="icon__box">
-          <S.Img src={A.home} alt="home" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.marker} alt="marker" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.bell} alt="bell" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.bi} alt="bi" className="navIcon" />
-        </S.Div>
-      </S.Nav> */}
     </S.Container>
   );
 };
