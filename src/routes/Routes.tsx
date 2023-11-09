@@ -1,5 +1,4 @@
 import { useRoutes } from "react-router-dom";
-import { Favorite, Home, Login } from "@mui/icons-material";
 
 import Layout from "../layout/Layout";
 import Boarding from "../pages/Boarding/Boarding";
@@ -7,6 +6,9 @@ import SignUp from "../pages/SignUp/SignUp";
 import Product from "../pages/Product/Product";
 import Carts from "../pages/Carts/Carts";
 import Admin from "../pages/Admin/Admin";
+import Login from "../pages/Login/Login";
+import Home from "../pages/Home/Home";
+import Favorite from "../pages/Favorite/Favorite";
 
 const AppRoutes = () => {
   return useRoutes([
