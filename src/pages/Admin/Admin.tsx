@@ -1,33 +1,33 @@
 import AdminProductForm from "../../components/AdminProductForm/AdminProductForm";
+import AdminProductList from "../../components/AdminProductList/AdminProductList";
+import * as S from "./styles";
 
 const Admin = () => {
   return (
-    <>
+    <S.Container>
       <AdminProductForm />
-    </>
+      <AdminProductList />
+    </S.Container>
   );
 };
 
 export default Admin;
 
-// const handleUpload = async () => {
-//   if (selectedFile) {
-//     const formData = new FormData();
-//     formData.append("file", selectedFile);
-
-//     try {
-//       await axios.post("http://localhost:5000/upload", formData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-
-//       alert("이미지가 업로드되었습니다");
-//     } catch (error) {
-//       alert("이미지 업로드에 실패했습니다");
-//     }
-//   }
-// };
-
 {
+  // const handleUpload = async () => {
+  //   if (selectedFile) {
+  //     const formData = new FormData();
+  //     formData.append("file", selectedFile);
+  //     try {
+  //       await axios.post("http://localhost:5000/upload", formData, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       });
+  //       alert("이미지가 업로드되었습니다");
+  //     } catch (error) {
+  //       alert("이미지 업로드에 실패했습니다");
+  //     }
+  //   }
+  // };
   /* {items
         .slice()
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
