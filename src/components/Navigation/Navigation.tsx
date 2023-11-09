@@ -12,7 +12,7 @@ import * as S from "./styles";
 const Navigation = () => {
   const [value, setValue] = useState("home");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (e: React.FormEvent, newValue: string) => {
     setValue(newValue);
   };
 

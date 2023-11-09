@@ -7,21 +7,70 @@ import Product from "./pages/Product/Product";
 import Favorite from "./pages/Favorite/Favorite";
 import Carts from "./pages/Carts/Carts";
 import Admin from "./pages/Admin/Admin";
+import Layout from "./layout/Layout";
 
 const App = () => {
   return (
-    <div className="container">
-      <Routes>
-        <Route path="/" element={<Boarding />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="home" element={<Home />} />
-        <Route path="home/:id" element={<Product />} />
-        <Route path="likes" element={<Favorite />} />
-        <Route path="carts" element={<Carts />} />
-        <Route path="admin" element={<Admin />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <Boarding />
+          </Layout>
+        }
+      />
+      <Route
+        path="login"
+        element={
+          <Layout>
+            <Login />
+          </Layout>
+        }
+      />
+      <Route
+        path="signup"
+        element={
+          <Layout>
+            <SignUp />
+          </Layout>
+        }
+      />
+      <Route
+        path="home"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
+      />
+      <Route
+        path="home/:id"
+        element={
+          <Layout>
+            <Product />
+          </Layout>
+        }
+      />
+      <Route
+        path="likes"
+        element={
+          <Layout>
+            <Favorite />
+          </Layout>
+        }
+      />
+      <Route
+        path="carts"
+        element={
+          <Layout>
+            <Carts />
+          </Layout>
+        }
+      />
+
+      <Route path="admin" element={<Admin />} />
+    </Routes>
   );
 };
 
