@@ -109,6 +109,7 @@ export const P = styled.p`
 
 export const Img = styled.img`
   &.logo {
+    cursor: pointer;
     width: 2rem;
     height: 2rem;
     object-fit: cover;
