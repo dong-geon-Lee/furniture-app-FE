@@ -29,3 +29,7 @@ export interface IPrductButtonProps {
 export interface IHeaderClassProps {
   activeClass: string;
 }
+
+export interface LayoutProps {
+  children: React.ReactNode;
+}
