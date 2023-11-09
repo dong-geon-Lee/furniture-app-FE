@@ -137,6 +137,7 @@ export const Span = styled.span`
 
 export const Section = styled.section`
   padding: 0 2rem;
+  margin-bottom: 8.88rem;
 `;
 
 export const Button = styled.button`
@@ -156,7 +157,7 @@ export const Button = styled.button`
 
   &.cart__btn {
     position: fixed;
-    bottom: 10rem;
+    bottom: 23.6rem;
     width: 33.4rem;
     height: 5rem;
     border-radius: 0.8rem;

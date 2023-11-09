@@ -1,6 +1,7 @@
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
+import Navigation from "../../components/Navigation/Navigation";
 
 const Favorite = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
@@ -104,20 +105,7 @@ const Favorite = () => {
         <S.Button className="cart__btn">Add all to my cart</S.Button>
       </S.Section>
 
-      <S.Nav className="nav">
-        <S.Div className="icon__box">
-          <S.Img src={A.home} alt="home" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.marker} alt="marker" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.bell} alt="bell" className="navIcon" />
-        </S.Div>
-        <S.Div className="icon__box">
-          <S.Img src={A.bi} alt="bi" className="navIcon" />
-        </S.Div>
-      </S.Nav>
+      <Navigation />
     </S.Container>
   );
 };
