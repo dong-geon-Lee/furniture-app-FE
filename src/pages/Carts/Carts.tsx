@@ -1,10 +1,12 @@
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 const Carts = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
+  const navigate = useNavigate();
 
   return (
     <S.Container>
@@ -14,7 +16,12 @@ const Carts = () => {
       </S.Div>
 
       <S.Div className="box">
-        <S.Img src={A.back2} alt="back2" className="logo" />
+        <S.Img
+          src={A.back2}
+          alt="back2"
+          className="logo"
+          onClick={() => navigate("/home")}
+        />
         <S.Div>
           <S.H1 className="title">My cart</S.H1>
         </S.Div>
