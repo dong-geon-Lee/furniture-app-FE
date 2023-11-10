@@ -30,6 +30,17 @@ export interface IHeaderClassProps {
   activeClass: string;
 }
 
-export interface LayoutProps {
+export interface ILayoutProps {
   children: React.ReactNode;
+}
+
+export interface ICartItem {
+  id: number;
+  name: string;
+  price: string;
+  imageURL: string;
+}
+
+export interface IGridLogoProps {
+  $active: boolean;
 }
