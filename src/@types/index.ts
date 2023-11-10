@@ -39,10 +39,12 @@ export interface ICartItem {
   name: string;
   price: string;
   imageURL: string;
+  quantity?: number;
 }
 
 export interface ICartState {
   cartItems: ICartItem[];
+  totalPrice: number;
 }
 
 export interface IGridLogoProps {
