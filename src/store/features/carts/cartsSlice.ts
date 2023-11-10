@@ -1,15 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ICartState } from "../../../@types";
 
-export interface ICartItem {
-  id: number;
-  name: string;
-  price: string;
-  imageURL: string;
-}
-
 const initialState: ICartState = {
   cartItems: [],
+  totalPrice: 0,
 };
 
 const cartsSlice = createSlice({
@@ -21,16 +15,23 @@ const cartsSlice = createSlice({
     },
 
     removeItem(state, action) {
-      state.cartItems = state.cartItems.filter(
-        (item) => item.id !== action.payload
-      );
+      state.cartItems = action.payload;
     },
 
     clearCart(state) {
       state.cartItems = [];
     },
+
+    increasePrice(state, action) {
+      state.totalPrice += action.payload;
+    },
+
+    decreasePrice(state, action) {
+      state.totalPrice -= action.payload;
+    },
   },
 });
 
-export const { addItem, removeItem, clearCart } = cartsSlice.actions;
+export const { addItem, removeItem, clearCart, increasePrice, decreasePrice } =
+  cartsSlice.actions;
 export default cartsSlice.reducer;

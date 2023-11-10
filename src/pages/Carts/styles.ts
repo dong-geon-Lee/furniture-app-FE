@@ -5,14 +5,6 @@ export const Container = styled.div`
   height: inherit;
   background-color: #fff;
   border: 1px solid #e0e0e0;
-
-  /* & .css-wnkddu-MuiPaper-root-MuiAlert-root {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-  } */
 `;
 
 export const Div = styled.div`
@@ -81,6 +73,8 @@ export const Div = styled.div`
   }
 `;
 
+export const Box = styled.div``;
+
 export const Main = styled.main`
   &.grid__box {
     display: grid;
@@ -118,8 +112,8 @@ export const Img = styled.img`
 
   &.grid__img {
     border-radius: 1rem;
-    width: 100%;
-    height: 100%;
+    width: 9.6rem;
+    height: 10rem;
     object-fit: cover;
   }
 
