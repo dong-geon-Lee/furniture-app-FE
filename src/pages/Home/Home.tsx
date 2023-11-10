@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IProductProps } from "../../@types";
+
+import { ICartItem, IProductProps } from "../../@types";
+import { VariantType, useSnackbar } from "notistack";
+
+import { IconButton } from "@mui/material";
 
 import axios from "axios";
 
@@ -15,6 +19,36 @@ const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [cartLists, setCartLists] = useState<ICartItem[]>([]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleClickVariant = (variant: VariantType, productId: number) => {
+    const selectedProduct = products.find(
+      (product) => product.id === productId
+    );
+
+    if (selectedProduct) {
+      const isAlreadyInCart = cartLists.some((item) => item.id === productId);
+
+      if (!isAlreadyInCart) {
+        const newCartLists: ICartItem[] = [
+          ...cartLists,
+          {
+            id: productId,
+            name: selectedProduct.name,
+            price: selectedProduct.price,
+            imageURL: selectedProduct.imageURL,
+          },
+        ];
+
+        setCartLists(newCartLists);
+        enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
+      }
+    }
+  };
+
+  console.log(cartLists);
 
   const navigate = useNavigate();
 
@@ -62,7 +96,11 @@ const Home = () => {
           <S.H1>Make home</S.H1>
           <S.Title>Beautiful</S.Title>
         </S.TextBox>
-        <S.Img src={A.cart} alt="cart" />
+        <IconButton>
+          <S.StyledBadge badgeContent={cartLists.length}>
+            <S.Img src={A.cart} alt="cart" />
+          </S.StyledBadge>
+        </IconButton>
       </S.ImgBox>
 
       <S.LogoBox>
@@ -111,7 +149,24 @@ const Home = () => {
               {product.name}
             </S.GridLabel>
             <S.GridText>$ {product.price}</S.GridText>
-            <S.GridLogo src={A.frame} alt="frame" />
+
+            <S.Button
+              disabled={cartLists.some(
+                (cartList) => cartList.id === product.id
+              )}
+              onClick={() =>
+                product.id !== undefined &&
+                handleClickVariant("success", product.id)
+              }
+            >
+              <S.GridLogo
+                $active={cartLists.some(
+                  (cartItem) => cartItem.id === product.id
+                )}
+                src={A.frame}
+                alt="frame"
+              />
+            </S.Button>
           </S.GridItem>
         ))}
       </S.Grid>

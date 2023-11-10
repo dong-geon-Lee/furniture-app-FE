@@ -1,6 +1,6 @@
-import { LayoutProps } from "../@types";
+import { ILayoutProps } from "../@types";
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: ILayoutProps) => {
   return <div className="container">{children}</div>;
 };
 
