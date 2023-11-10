@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Badge, { BadgeProps } from "@mui/material/Badge";
+import { IGridLogoProps } from "../../@types";
 
 export const Container = styled.div`
   width: inherit;
@@ -188,15 +190,33 @@ export const NavBox = styled.div`
   }
 `;
 
-export const GridLogo = styled.img`
+export const Button = styled.button`
+  position: absolute;
+  bottom: 21%;
+  right: 6%;
+  transform: translate(-6%, -21%);
   width: 3rem;
   height: 3rem;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+export const GridLogo = styled.img<IGridLogoProps>`
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  position: absolute;
-  bottom: 22%;
-  right: 5%;
-  transform: translate(-5%, -25%);
+  background-color: ${(props) => (props.$active ? "#303030" : "transparent")};
+  border-radius: ${(props) => (props.$active ? "50%" : "0%")};
+
+  &:hover {
+    background-color: #303030;
+    border-radius: 50%;
+  }
 `;
 
 export const ImgLogo = styled.img`
@@ -204,4 +224,15 @@ export const ImgLogo = styled.img`
   height: 2.4rem;
   object-fit: cover;
   display: block;
+`;
+
+export const StyledBadge = styled(Badge)<BadgeProps>`
+  & .MuiBadge-badge {
+    right: -3;
+    top: 13;
+    padding: "0 4px";
+    color: #fff;
+    font-size: 1.2rem;
+    background-color: #9c27b0;
+  }
 `;
