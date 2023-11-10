@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, increasePrice } from "../../store/features/carts/cartsSlice";
+import { RootState } from "../../store";
+
 import { ICartItem, IProductProps } from "../../@types";
 import { VariantType, useSnackbar } from "notistack";
-
 import { IconButton } from "@mui/material";
-
 import axios from "axios";
 
 import ProductButton from "../../components/ProductButton/ProductButton";
@@ -14,17 +16,16 @@ import Navigation from "../../components/Navigation/Navigation";
 
 import * as S from "./styles";
 import * as A from "../../assets";
-import { addItem } from "../../store/features/carts/cartsSlice";
-import { useDispatch } from "react-redux";
 
 const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [cartLists, setCartLists] = useState<ICartItem[]>([]);
+
+  const cartItems = useSelector((state: RootState) => state.carts.cartItems);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClickVariant = (variant: VariantType, productId: number) => {
@@ -33,21 +34,19 @@ const Home = () => {
     );
 
     if (selectedProduct) {
-      const isAlreadyInCart = cartLists.some((item) => item.id === productId);
+      const isAlreadyInCart = cartItems.some((item) => item.id === productId);
 
       if (!isAlreadyInCart) {
-        const newCartLists: ICartItem[] = [
-          ...cartLists,
-          {
-            id: productId,
-            name: selectedProduct.name,
-            price: selectedProduct.price,
-            imageURL: selectedProduct.imageURL,
-          },
-        ];
+        const newCartLists: ICartItem = {
+          id: productId,
+          name: selectedProduct.name,
+          price: selectedProduct.price,
+          imageURL: selectedProduct.imageURL,
+          // quantity:
+        };
 
-        setCartLists(newCartLists);
-        dispatch(addItem(newCartLists[0]));
+        dispatch(addItem(newCartLists));
+        dispatch(increasePrice(+newCartLists.price));
         enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
       }
     }
@@ -97,8 +96,8 @@ const Home = () => {
           <S.H1>Make home</S.H1>
           <S.Title>Beautiful</S.Title>
         </S.TextBox>
-        <IconButton>
-          <S.StyledBadge badgeContent={cartLists.length}>
+        <IconButton onClick={() => navigate("/carts")}>
+          <S.StyledBadge badgeContent={cartItems.length}>
             <S.Img src={A.cart} alt="cart" />
           </S.StyledBadge>
         </IconButton>
@@ -152,7 +151,7 @@ const Home = () => {
             <S.GridText>$ {product.price}</S.GridText>
 
             <S.Button
-              disabled={cartLists.some(
+              disabled={cartItems.some(
                 (cartList) => cartList.id === product.id
               )}
               onClick={() =>
@@ -161,7 +160,7 @@ const Home = () => {
               }
             >
               <S.GridLogo
-                $active={cartLists.some(
+                $active={cartItems.some(
                   (cartItem) => cartItem.id === product.id
                 )}
                 src={A.frame}
