@@ -14,6 +14,8 @@ import Navigation from "../../components/Navigation/Navigation";
 
 import * as S from "./styles";
 import * as A from "../../assets";
+import { addItem } from "../../store/features/carts/cartsSlice";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
   const [products, setProducts] = useState<IProductProps[]>([]);
@@ -21,6 +23,8 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [cartLists, setCartLists] = useState<ICartItem[]>([]);
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClickVariant = (variant: VariantType, productId: number) => {
@@ -43,14 +47,11 @@ const Home = () => {
         ];
 
         setCartLists(newCartLists);
+        dispatch(addItem(newCartLists[0]));
         enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
       }
     }
   };
-
-  console.log(cartLists);
-
-  const navigate = useNavigate();
 
   const handleProductItem = (id?: number) => {
     const selectedItems = products.find((item) => item.id === id);

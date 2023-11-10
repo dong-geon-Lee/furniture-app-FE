@@ -41,6 +41,10 @@ export interface ICartItem {
   imageURL: string;
 }
 
+export interface ICartState {
+  cartItems: ICartItem[];
+}
+
 export interface IGridLogoProps {
   $active: boolean;
 }
