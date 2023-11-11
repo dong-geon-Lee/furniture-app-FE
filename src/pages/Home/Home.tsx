@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, increasePrice } from "../../store/features/carts/cartsSlice";
 import { RootState } from "../../store";
+import {
+  addItem,
+  getItems,
+  increasePrice,
+  totalCart,
+} from "../../store/features/carts/cartsSlice";
 
-import { ICartItem, IProductProps } from "../../@types";
+import { IProductProps } from "../../@types";
 import { VariantType, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import axios from "axios";
@@ -22,34 +27,50 @@ const Home = () => {
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const cartItems = useSelector((state: RootState) => state.carts.cartItems);
+  const { cartItems } = useSelector((state: RootState) => state.carts);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClickVariant = (variant: VariantType, productId: number) => {
-    const selectedProduct = products.find(
-      (product) => product.id === productId
-    );
+  const handleClickVariant = async (
+    variant: VariantType,
+    productId: number
+  ) => {
+    const userId = 3;
+    const response = await axios.post("http://localhost:5000/carts", {
+      userId,
+      productId,
+      quantity: 1,
+    });
 
-    if (selectedProduct) {
-      const isAlreadyInCart = cartItems.some((item) => item.id === productId);
+    dispatch(addItem(response.data));
+    dispatch(totalCart(cartItems.length));
+    // dispatch(increasePrice(+cartItems.product?.price));
+    enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
 
-      if (!isAlreadyInCart) {
-        const newCartLists: ICartItem = {
-          id: productId,
-          name: selectedProduct.name,
-          price: selectedProduct.price,
-          imageURL: selectedProduct.imageURL,
-          // quantity:
-        };
+    // dispatch(increasePrice(+response.data?.product?.price));
+    // const selectedProduct = products.find(
+    //   (product) => product.id === productId
+    // );
 
-        dispatch(addItem(newCartLists));
-        dispatch(increasePrice(+newCartLists.price));
-        enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
-      }
-    }
+    // if (selectedProduct) {
+    //   const isAlreadyInCart = cartItems.some((item) => item.id === productId);
+
+    //   if (!isAlreadyInCart) {
+    //     const newCartLists: ICartItem = {
+    //       id: productId,
+    //       name: selectedProduct.name,
+    //       price: selectedProduct.price,
+    //       imageURL: selectedProduct.imageURL,
+    //       // quantity: selectedProduct.quantity,
+    //     };
+
+    //     dispatch(addItem(newCartLists));
+    //     dispatch(increasePrice(+newCartLists.price));
+    // enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
+    //   }
+    // }
   };
 
   const handleProductItem = (id?: number) => {
@@ -86,6 +107,16 @@ const Home = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/carts");
+      const datas = response.data;
+      dispatch(totalCart(datas.length));
+      dispatch(getItems(datas));
+    };
+    fetchData();
+  }, [dispatch]);
 
   return (
     <S.Container>
@@ -161,7 +192,7 @@ const Home = () => {
             >
               <S.GridLogo
                 $active={cartItems.some(
-                  (cartItem) => cartItem.id === product.id
+                  (cartItem) => cartItem?.product.id === product.id
                 )}
                 src={A.frame}
                 alt="frame"

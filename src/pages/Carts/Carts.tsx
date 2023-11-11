@@ -6,10 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {
   decreasePrice,
-  increasePrice,
-  removeItem,
+  getItems,
+  totalCart,
 } from "../../store/features/carts/cartsSlice";
-import { ICartItem } from "../../@types";
+
+import axios from "axios";
+import { useEffect } from "react";
+// import { useState } from "react";
 
 const Carts = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
@@ -19,22 +22,42 @@ const Carts = () => {
     (state: RootState) => state.carts
   );
 
+  console.log(cartItems);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleCartItems = (id: number) => {
-    const cartLists = cartItems.filter(
-      (cartItem: ICartItem) => cartItem.id !== id
-    );
-    dispatch(removeItem(cartLists));
+  const handleCartItems = async (id: number) => {
+    // dispatch(removeItem(cartLists));
+    // dispatch(getItems(response.data));
+    // const seletedItem = cartItems.find(
+    //   (cartItem: ICartItem) => cartItem.id === id
+    // );
+    // if (seletedItem) dispatch(decreasePrice(parseInt(seletedItem.price)));
 
-    const seletedItem = cartItems.find(
-      (cartItem: ICartItem) => cartItem.id === id
-    );
-    if (seletedItem) dispatch(decreasePrice(parseInt(seletedItem.price)));
+    await axios.delete(`http://localhost:5000/carts/${id}`);
+    const response = await axios.get("http://localhost:5000/carts");
+    const datas = response.data;
+    dispatch(getItems(datas));
+
+    console.log(datas);
+    dispatch(decreasePrice(+datas.product.price));
   };
 
-  // const handleCartQty = () => {};
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/carts");
+      const datas = response.data;
+      dispatch(getItems(datas));
+    };
+    fetchData();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const total = cartItems.reduce((acc, cur) => acc + +cur.product.price, 0);
+    console.log(total);
+    dispatch(totalCart(total));
+  }, []);
 
   return (
     <S.Container>
@@ -58,27 +81,27 @@ const Carts = () => {
 
       <S.Section className="cart__list">
         {cartItems.map((cartItem) => (
-          <S.Box key={cartItem.id}>
+          <S.Box key={cartItem?.product?.id}>
             <S.Main className="grid__box">
               <S.Img
-                src={cartItem.imageURL}
-                alt={cartItem.name}
+                src={cartItem?.product?.imageURL}
+                alt={cartItem?.product?.name}
                 className="grid__img"
               />
               <S.Div className="cart__info">
-                <S.Label>{cartItem.name}</S.Label>
-                <S.Span>$ {cartItem.price}</S.Span>
+                <S.Label>{cartItem.product?.name}</S.Label>
+                <S.Span>$ {cartItem.product?.price}</S.Span>
                 <S.Div className="cart__menu">
                   <S.Button
                     className="cart__btn"
-                    onClick={() => dispatch(increasePrice(+cartItem.price))}
+                    // onClick={() => dispatch(increasePrice(+cartItem.price))}
                   >
                     <S.Img src={A.btn1} alt="btn1" />
                   </S.Button>
-                  <S.H1 className="cart__qty">01</S.H1>
+                  <S.H1 className="cart__qty">{cartItem?.quantity}</S.H1>
                   <S.Button
                     className="cart__btn"
-                    onClick={() => dispatch(decreasePrice(+cartItem.price))}
+                    // onClick={() => dispatch(decreasePrice(+cartItem.price))}
                   >
                     <S.Img src={A.btn2} alt="btn2" />
                   </S.Button>
