@@ -17,6 +17,7 @@ export interface IProductProps {
   price: string;
   imageURL: string;
   category: string;
+  // quantity: number;
 }
 
 export interface IPrductButtonProps {
@@ -45,6 +46,7 @@ export interface ICartItem {
 export interface ICartState {
   cartItems: ICartItem[];
   totalPrice: number;
+  cartCounts: number;
 }
 
 export interface IGridLogoProps {
