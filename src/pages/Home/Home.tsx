@@ -10,15 +10,15 @@ import {
   totalCart,
 } from "../../store/features/carts/cartsSlice";
 
-import { IProductProps } from "../../@types";
+import { ICartItem, IProductProps } from "../../@types";
 import { VariantType, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
-import axios from "axios";
 
 import ProductButton from "../../components/ProductButton/ProductButton";
 import Header from "../../components/Header/Header";
 import Navigation from "../../components/Navigation/Navigation";
 
+import axios from "axios";
 import * as S from "./styles";
 import * as A from "../../assets";
 
@@ -44,33 +44,14 @@ const Home = () => {
       quantity: 1,
     });
 
+    const productPrice = products.find(
+      (product) => product.id === productId
+    )?.price;
+
+    if (productPrice) dispatch(increasePrice(productPrice));
     dispatch(addItem(response.data));
     dispatch(totalCart(cartItems.length));
-    // dispatch(increasePrice(+cartItems.product?.price));
     enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
-
-    // dispatch(increasePrice(+response.data?.product?.price));
-    // const selectedProduct = products.find(
-    //   (product) => product.id === productId
-    // );
-
-    // if (selectedProduct) {
-    //   const isAlreadyInCart = cartItems.some((item) => item.id === productId);
-
-    //   if (!isAlreadyInCart) {
-    //     const newCartLists: ICartItem = {
-    //       id: productId,
-    //       name: selectedProduct.name,
-    //       price: selectedProduct.price,
-    //       imageURL: selectedProduct.imageURL,
-    //       // quantity: selectedProduct.quantity,
-    //     };
-
-    //     dispatch(addItem(newCartLists));
-    //     dispatch(increasePrice(+newCartLists.price));
-    // enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
-    //   }
-    // }
   };
 
   const handleProductItem = (id?: number) => {
@@ -112,8 +93,21 @@ const Home = () => {
     const fetchData = async () => {
       const response = await axios.get("http://localhost:5000/carts");
       const datas = response.data;
-      dispatch(totalCart(datas.length));
-      dispatch(getItems(datas));
+
+      const cartDatas = datas.map((cartItem: ICartItem) => {
+        const { id, quantity, product } = cartItem;
+        const { id: productId, name, price, imageURL } = product || [];
+        return {
+          id,
+          productId: productId,
+          quantity,
+          name: name,
+          price: price,
+          imageURL: imageURL,
+        };
+      });
+      dispatch(totalCart(cartDatas.length));
+      dispatch(getItems(cartDatas));
     };
     fetchData();
   }, [dispatch]);
@@ -192,7 +186,7 @@ const Home = () => {
             >
               <S.GridLogo
                 $active={cartItems.some(
-                  (cartItem) => cartItem?.product.id === product.id
+                  (cartItem) => cartItem?.productId === product.id
                 )}
                 src={A.frame}
                 alt="frame"
@@ -201,7 +195,6 @@ const Home = () => {
           </S.GridItem>
         ))}
       </S.Grid>
-
       <Navigation />
     </S.Container>
   );

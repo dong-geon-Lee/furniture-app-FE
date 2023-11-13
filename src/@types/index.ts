@@ -17,7 +17,7 @@ export interface IProductProps {
   price: string;
   imageURL: string;
   category: string;
-  // quantity: number;
+  productId: number;
 }
 
 export interface IPrductButtonProps {
@@ -36,17 +36,25 @@ export interface ILayoutProps {
 }
 
 export interface ICartItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+  id: number;
+  name?: string;
+  price: string;
+  imageURL?: string;
+  quantity: number;
+}
+
+export interface IProductItem {
   id: number;
   name: string;
   price: string;
   imageURL: string;
-  quantity?: number;
 }
 
 export interface ICartState {
   cartItems: ICartItem[];
   totalPrice: number;
-  cartCounts: number;
 }
 
 export interface IGridLogoProps {
