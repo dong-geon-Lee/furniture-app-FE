@@ -10,11 +10,11 @@ import {
 } from "../../store/features/carts/cartsSlice";
 
 import axios from "axios";
+import { ICartItem } from "../../@types";
 
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
-import { ICartItem } from "../../@types";
 
 const Carts = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
@@ -123,7 +123,6 @@ const Carts = () => {
           imageURL: imageURL,
         };
       });
-
       dispatch(getItems(cartDatas));
     };
     fetchData();
@@ -136,8 +135,6 @@ const Carts = () => {
     );
     dispatch(totalCart(total));
   }, [cartDatas, dispatch]);
-
-  console.log(cartDatas);
 
   return (
     <S.Container>

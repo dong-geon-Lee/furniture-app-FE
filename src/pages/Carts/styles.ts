@@ -188,6 +188,18 @@ export const Span = styled.span`
 
 export const Section = styled.section`
   padding: 0 2rem;
+
+  height: 55rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0.24rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+  }
 `;
 
 export const Button = styled.button`
