@@ -1,7 +1,6 @@
-import * as S from "./styles";
-import * as A from "../../assets";
-import * as C from "../../constants";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {
@@ -11,8 +10,11 @@ import {
 } from "../../store/features/carts/cartsSlice";
 
 import axios from "axios";
-import { useEffect } from "react";
-// import { useState } from "react";
+
+import * as S from "./styles";
+import * as A from "../../assets";
+import * as C from "../../constants";
+import { ICartItem } from "../../@types";
 
 const Carts = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
@@ -22,42 +24,120 @@ const Carts = () => {
     (state: RootState) => state.carts
   );
 
-  console.log(cartItems);
-
+  const cartDatas = cartItems;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleCartItems = async (id: number) => {
-    // dispatch(removeItem(cartLists));
-    // dispatch(getItems(response.data));
-    // const seletedItem = cartItems.find(
-    //   (cartItem: ICartItem) => cartItem.id === id
-    // );
-    // if (seletedItem) dispatch(decreasePrice(parseInt(seletedItem.price)));
+    const cartItemToRemove = cartDatas.find((item) => item.id === id);
+    if (cartItemToRemove) {
+      dispatch(decreasePrice(cartItemToRemove?.price));
+    }
 
     await axios.delete(`http://localhost:5000/carts/${id}`);
+
     const response = await axios.get("http://localhost:5000/carts");
     const datas = response.data;
-    dispatch(getItems(datas));
 
-    console.log(datas);
-    dispatch(decreasePrice(+datas.product.price));
+    const items = datas.map((cartItem: ICartItem) => {
+      const { id, quantity, product } = cartItem;
+      const { id: productId, name, price, imageURL } = product || [];
+      return {
+        id,
+        productId: productId,
+        quantity,
+        name: name,
+        price: price,
+        imageURL: imageURL,
+      };
+    });
+
+    dispatch(getItems(items));
+  };
+
+  const handleIncCartQty = async (id: number) => {
+    const newCart = cartDatas.map((cartData) => {
+      if (cartData.id !== id) return cartData;
+      return { ...cartData, quantity: cartData.quantity + 1 };
+    });
+
+    const total = newCart.reduce(
+      (acc, cur) => acc + +cur.price * cur.quantity,
+      0
+    );
+
+    try {
+      const selectedCart = newCart.find((cart) => cart.id === id);
+      if (selectedCart) {
+        await axios.patch(`http://localhost:5000/carts/${selectedCart.id}`, {
+          quantity: selectedCart?.quantity,
+        });
+
+        dispatch(totalCart(total));
+        dispatch(getItems(newCart));
+      }
+    } catch (error) {
+      throw new Error("카트 업데이트 중 오류 발생");
+    }
+  };
+
+  const handleDecCartQty = async (id: number) => {
+    const newCart = cartDatas.map((cartData) => {
+      if (cartData.id !== id) return cartData;
+      return { ...cartData, quantity: cartData.quantity - 1 };
+    });
+
+    const total = newCart.reduce(
+      (acc, cur) => acc + +cur.price * cur.quantity,
+      0
+    );
+
+    try {
+      const selectedCart = newCart.find((cart) => cart.id === id);
+      if (selectedCart) {
+        await axios.patch(`http://localhost:5000/carts/${selectedCart.id}`, {
+          quantity: selectedCart?.quantity,
+        });
+
+        dispatch(totalCart(total));
+        dispatch(getItems(newCart));
+      }
+    } catch (error) {
+      throw new Error("카트 업데이트 중 오류 발생");
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("http://localhost:5000/carts");
       const datas = response.data;
-      dispatch(getItems(datas));
+      const cartDatas = datas.map((cartItem: ICartItem) => {
+        const { id, quantity, product } = cartItem;
+        const { id: productId, name, price, imageURL } = product || [];
+        return {
+          id,
+          productId: productId,
+          quantity,
+          name: name,
+          price: price,
+          imageURL: imageURL,
+        };
+      });
+
+      dispatch(getItems(cartDatas));
     };
     fetchData();
   }, [dispatch]);
 
   useEffect(() => {
-    const total = cartItems.reduce((acc, cur) => acc + +cur.product.price, 0);
-    console.log(total);
+    const total = cartDatas.reduce(
+      (acc, cur) => acc + +cur.price * cur.quantity,
+      0
+    );
     dispatch(totalCart(total));
-  }, []);
+  }, [cartDatas, dispatch]);
+
+  console.log(cartDatas);
 
   return (
     <S.Container>
@@ -80,28 +160,28 @@ const Carts = () => {
       </S.Div>
 
       <S.Section className="cart__list">
-        {cartItems.map((cartItem) => (
-          <S.Box key={cartItem?.product?.id}>
+        {cartDatas.map((cartItem) => (
+          <S.Box key={cartItem?.id}>
             <S.Main className="grid__box">
               <S.Img
-                src={cartItem?.product?.imageURL}
-                alt={cartItem?.product?.name}
+                src={cartItem?.imageURL}
+                alt={cartItem?.name}
                 className="grid__img"
               />
               <S.Div className="cart__info">
-                <S.Label>{cartItem.product?.name}</S.Label>
-                <S.Span>$ {cartItem.product?.price}</S.Span>
+                <S.Label>{cartItem.name}</S.Label>
+                <S.Span>$ {cartItem.price}</S.Span>
                 <S.Div className="cart__menu">
                   <S.Button
                     className="cart__btn"
-                    // onClick={() => dispatch(increasePrice(+cartItem.price))}
+                    onClick={() => handleIncCartQty(cartItem.id)}
                   >
                     <S.Img src={A.btn1} alt="btn1" />
                   </S.Button>
                   <S.H1 className="cart__qty">{cartItem?.quantity}</S.H1>
                   <S.Button
                     className="cart__btn"
-                    // onClick={() => dispatch(decreasePrice(+cartItem.price))}
+                    onClick={() => handleDecCartQty(cartItem.id)}
                   >
                     <S.Img src={A.btn2} alt="btn2" />
                   </S.Button>
