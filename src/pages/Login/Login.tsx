@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/features/users/usersSlice";
 
 import { ILoginProps } from "../../@types";
 import { signinAPI } from "../../apis";
@@ -15,7 +17,9 @@ const Login = () => {
     password: "",
   });
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
@@ -29,15 +33,18 @@ const Login = () => {
     }
 
     try {
-      const response = await signinAPI(userInfo);
-      if (response) {
+      const token = await signinAPI(userInfo);
+
+      if (token) {
+        dispatch(loginUser(token));
+        localStorage.setItem("token", JSON.stringify(token));
+
         alert("로그인 되었습니다");
         navigate("/home");
         setUserInfo({ email: "", password: "" });
       }
-    } catch (error) {
-      console.log(error);
-      // throw new Error(error.response.data.message);
+    } catch (error: any) {
+      throw new Error(error.response.data.message);
     }
   };
 
