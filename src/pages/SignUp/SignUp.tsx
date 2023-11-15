@@ -27,8 +27,19 @@ const SignUp = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const isEmptyField =
+      !userInfo.name ||
+      !userInfo.email ||
+      !userInfo.password ||
+      !userInfo.password2;
+
+    if (isEmptyField) {
+      alert("모든 정보를 입력해주십시오 ");
+      return;
+    }
+
     if (userInfo.password !== userInfo.password2) {
-      alert("회원가입에 실패하였습니다");
+      alert("비밀번호가 일치하지않습니다!");
       return;
     }
 
@@ -44,9 +55,8 @@ const SignUp = () => {
           password2: "",
         });
       }
-    } catch (error) {
-      console.log(error);
-      // throw new Error(error.response.data.message);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message);
     }
   };
 
@@ -67,7 +77,6 @@ const SignUp = () => {
   const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
 
-  console.log(userInfo);
   return (
     <S.Container>
       <S.Div className="header">
@@ -80,13 +89,13 @@ const SignUp = () => {
         <S.Hr />
       </S.Div>
       <S.Box>
-        <S.H1 className="h1">Welcome</S.H1>
+        <S.H1 className="h1">환영합니다</S.H1>
       </S.Box>
 
       <S.Form onSubmit={onSubmit}>
         <S.Div className="input__box">
-          <S.Text variant="h6" component="p">
-            Name
+          <S.Text variant="h6" component="span">
+            이름
           </S.Text>
           <S.Input
             type="text"
@@ -97,8 +106,8 @@ const SignUp = () => {
           />
         </S.Div>
         <S.Div className="input__box">
-          <S.Text variant="h6" component="p">
-            Email
+          <S.Text variant="h6" component="span">
+            이메일
           </S.Text>
           <S.Input
             type="email"
@@ -109,8 +118,8 @@ const SignUp = () => {
           />
         </S.Div>
         <S.Div className="input__box">
-          <S.Text variant="h6" component="p">
-            Password
+          <S.Text variant="h6" component="span">
+            비밀번호
           </S.Text>
           <S.Input
             type={showPassword ? "text" : "password"}
@@ -130,8 +139,8 @@ const SignUp = () => {
         </S.Div>
 
         <S.Div className="input__box">
-          <S.Text variant="h6" component="p">
-            Confirm Password
+          <S.Text variant="h6" component="span">
+            비밀번호 확인
           </S.Text>
           <S.Input
             type={confirmPassword ? "text" : "password"}
@@ -150,10 +159,10 @@ const SignUp = () => {
             }
           />
         </S.Div>
-        <S.Button type="submit">Sign Up</S.Button>
+        <S.Button type="submit">회원가입하기</S.Button>
         <S.Footer>
-          <S.H3> Already have account?</S.H3>
-          <S.LinkText to="/login">SignIn</S.LinkText>
+          <S.H3>이미 계정이 있으신가요?</S.H3>
+          <S.LinkText to="/login">로그인</S.LinkText>
         </S.Footer>
       </S.Form>
     </S.Container>
