@@ -17,38 +17,39 @@ import * as A from "../../assets";
 import * as C from "../../constants";
 
 const Carts = () => {
-  const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
-  const koreanTime = koreanTimeFormatter.format(new Date());
-
-  const { cartItems, totalPrice } = useSelector(
+  const { token } = useSelector((state: RootState) => state.users);
+  const { cartItems: cartDatas, totalPrice } = useSelector(
     (state: RootState) => state.carts
   );
 
-  const cartDatas = cartItems;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
+  const koreanTime = koreanTimeFormatter.format(new Date());
+
   const handleCartItems = async (id: number) => {
-    const cartItemToRemove = cartDatas.find((item) => item.id === id);
-    if (cartItemToRemove) {
-      dispatch(decreasePrice(cartItemToRemove?.price));
+    const removedCartItem = cartDatas.find((item) => item.id === id);
+    if (removedCartItem) {
+      dispatch(decreasePrice(removedCartItem?.price));
     }
 
     await axios.delete(`http://localhost:5000/carts/${id}`);
 
-    const response = await axios.get("http://localhost:5000/carts");
-    const datas = response.data;
+    const response = await axios.get("http://localhost:5000/carts/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    const items = datas.map((cartItem: ICartItem) => {
+    const items = response.data.map((cartItem: ICartItem) => {
       const { id, quantity, product } = cartItem;
       const { id: productId, name, price, imageURL } = product || [];
       return {
         id,
-        productId: productId,
+        productId,
         quantity,
         name: name,
         price: price,
-        imageURL: imageURL,
+        imageURL,
       };
     });
 
@@ -109,24 +110,26 @@ const Carts = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/carts");
-      const datas = response.data;
-      const cartDatas = datas.map((cartItem: ICartItem) => {
+      const response = await axios.get("http://localhost:5000/carts/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const cartDatas = response.data.map((cartItem: ICartItem) => {
         const { id, quantity, product } = cartItem;
         const { id: productId, name, price, imageURL } = product || [];
         return {
           id,
-          productId: productId,
+          productId,
           quantity,
           name: name,
           price: price,
-          imageURL: imageURL,
+          imageURL,
         };
       });
       dispatch(getItems(cartDatas));
     };
     fetchData();
-  }, [dispatch]);
+  }, [token, dispatch]);
 
   useEffect(() => {
     const total = cartDatas.reduce(
