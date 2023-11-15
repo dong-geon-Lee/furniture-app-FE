@@ -7,7 +7,6 @@ import {
   addItem,
   getItems,
   increasePrice,
-  totalCart,
 } from "../../store/features/carts/cartsSlice";
 
 import { ICartItem, IProductProps } from "../../@types";
@@ -24,7 +23,7 @@ import * as A from "../../assets";
 import { getUser } from "../../store/features/users/usersSlice";
 
 const Home = () => {
-  const { token } = useSelector((state: RootState) => state.users);
+  const { token, user } = useSelector((state: RootState) => state.users);
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -39,14 +38,11 @@ const Home = () => {
     variant: VariantType,
     productId: number
   ) => {
-    const userId = 1;
     const response = await axios.post("http://localhost:5000/carts", {
-      userId,
+      userId: user.id,
       productId,
       quantity: 1,
     });
-
-    console.log(productId, "야야야");
 
     const productPrice = products.find(
       (product) => product.id === productId
@@ -54,11 +50,10 @@ const Home = () => {
 
     if (productPrice) dispatch(increasePrice(productPrice));
     dispatch(addItem(response.data));
-    dispatch(totalCart(cartItems.length));
     enqueueSnackbar("장바구니로 이동되었습니다!", { variant });
   };
 
-  const handleProductItem = (id?: number) => {
+  const handleProductItem = (id: number) => {
     const selectedItems = products.find((item) => item.id === id);
     navigate(`/home/${id}`, { state: selectedItems });
   };
@@ -71,14 +66,6 @@ const Home = () => {
         : products.filter((product) => product.category === category)
     );
   };
-
-  useEffect(() => {
-    const filtered =
-      selectedCategory === "All"
-        ? products
-        : products.filter((product) => product.category === selectedCategory);
-    setFilteredProducts(filtered);
-  }, [selectedCategory, products]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,10 +81,30 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/carts");
-      const datas = response.data;
+    const filtered =
+      selectedCategory === "All"
+        ? products
+        : products.filter((product) => product.category === selectedCategory);
+    setFilteredProducts(filtered);
+  }, [selectedCategory, products]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(getUser(response.data));
+    };
+    fetchData();
+  }, [token, dispatch]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/carts/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const datas = response.data;
       const cartDatas = datas.map((cartItem: ICartItem) => {
         const { id, quantity, product } = cartItem;
         const { id: productId, name, price, imageURL } = product || [];
@@ -110,24 +117,10 @@ const Home = () => {
           imageURL: imageURL,
         };
       });
-      dispatch(totalCart(cartDatas.length));
       dispatch(getItems(cartDatas));
     };
     fetchData();
-  }, [dispatch]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/users/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      dispatch(getUser(response.data));
-    };
-    fetchData();
   }, [token, dispatch]);
-
-  console.log(filteredProducts);
-  console.log(cartItems);
 
   return (
     <S.Container>
@@ -196,10 +189,7 @@ const Home = () => {
               disabled={cartItems.some(
                 (cartList) => cartList.productId === product.id
               )}
-              onClick={() =>
-                product.id !== undefined &&
-                handleClickVariant("success", product.id)
-              }
+              onClick={() => handleClickVariant("success", product.id)}
             >
               <S.GridLogo
                 $active={cartItems.some(
