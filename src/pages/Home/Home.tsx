@@ -21,8 +21,10 @@ import Navigation from "../../components/Navigation/Navigation";
 import axios from "axios";
 import * as S from "./styles";
 import * as A from "../../assets";
+import { getUser } from "../../store/features/users/usersSlice";
 
 const Home = () => {
+  const { token } = useSelector((state: RootState) => state.users);
   const [products, setProducts] = useState<IProductProps[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -37,12 +39,14 @@ const Home = () => {
     variant: VariantType,
     productId: number
   ) => {
-    const userId = 3;
+    const userId = 1;
     const response = await axios.post("http://localhost:5000/carts", {
       userId,
       productId,
       quantity: 1,
     });
+
+    console.log(productId, "야야야");
 
     const productPrice = products.find(
       (product) => product.id === productId
@@ -112,6 +116,19 @@ const Home = () => {
     fetchData();
   }, [dispatch]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(getUser(response.data));
+    };
+    fetchData();
+  }, [token, dispatch]);
+
+  console.log(filteredProducts);
+  console.log(cartItems);
+
   return (
     <S.Container>
       <Header activeClass="header__normal" />
@@ -162,8 +179,8 @@ const Home = () => {
       </S.LogoBox>
 
       <S.Grid>
-        {filteredProducts.map((product) => (
-          <S.GridItem key={product.id}>
+        {filteredProducts.map((product, index) => (
+          <S.GridItem key={index}>
             <S.GridImg
               src={product.imageURL}
               alt={product.name}
@@ -177,7 +194,7 @@ const Home = () => {
 
             <S.Button
               disabled={cartItems.some(
-                (cartList) => cartList.id === product.id
+                (cartList) => cartList.productId === product.id
               )}
               onClick={() =>
                 product.id !== undefined &&
