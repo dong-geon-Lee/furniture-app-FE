@@ -9,39 +9,50 @@ import Admin from "../pages/Admin/Admin";
 import Login from "../pages/Login/Login";
 import Home from "../pages/Home/Home";
 import Favorite from "../pages/Favorite/Favorite";
+import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
+import PublicRoute from "../components/PublicRoute/PublicRoute";
+import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 
 const AppRoutes = () => {
   return useRoutes([
     {
       path: "/",
       element: (
-        <Layout>
-          <Boarding />
-        </Layout>
+        <PublicRoute redirectTo="/home">
+          <Layout>
+            <Boarding />
+          </Layout>
+        </PublicRoute>
       ),
     },
     {
       path: "login",
       element: (
-        <Layout>
-          <Login />
-        </Layout>
+        <PublicRoute redirectTo="/home">
+          <Layout>
+            <Login />
+          </Layout>
+        </PublicRoute>
       ),
     },
     {
       path: "signup",
       element: (
-        <Layout>
-          <SignUp />
-        </Layout>
+        <PublicRoute redirectTo="/home">
+          <Layout>
+            <SignUp />
+          </Layout>
+        </PublicRoute>
       ),
     },
     {
       path: "home",
       element: (
-        <Layout>
-          <Home />
-        </Layout>
+        <PrivateRoute>
+          <Layout>
+            <Home />
+          </Layout>
+        </PrivateRoute>
       ),
     },
     {
@@ -69,6 +80,7 @@ const AppRoutes = () => {
       ),
     },
     { path: "admin", element: <Admin /> },
+    { path: "*", element: <NotFoundPage /> },
   ]);
 };
 
