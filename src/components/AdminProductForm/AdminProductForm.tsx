@@ -51,7 +51,7 @@ const AdminProductForm = () => {
       const productData = {
         name: productInfo.name,
         description: productInfo.description,
-        price: productInfo.price,
+        price: Number(productInfo.price),
         imageURL: `https://furniture-bucket.s3.ap-northeast-2.amazonaws.com/${data.data?.id}`, // 이미지 파일의 이름을 imageURL로 설정
         category: productInfo.category,
       };
