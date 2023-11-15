@@ -11,7 +11,7 @@ export interface ILoginProps {
 }
 
 export interface IProductProps {
-  id?: number;
+  id: number;
   name: string;
   description: string;
   price: string;
@@ -36,7 +36,6 @@ export interface ILayoutProps {
 }
 
 export interface ICartItem {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   id: number;
   name?: string;
