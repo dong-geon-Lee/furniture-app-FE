@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { IProductsProps } from "../../../@types";
 
-const initialState: any = {
+const initialState: IProductsProps = {
   products: [],
 };
 
@@ -8,19 +9,24 @@ const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    addItem(state, action) {
-      state.products.push({});
-    },
-
-    removeItem(state, action) {
+    getProducts(state, action) {
       state.products = action.payload;
     },
 
-    getProducts(state, action) {
+    addProduct(state, action) {
+      state.products.push(action.payload);
+    },
+
+    removeProduct(state, action) {
+      state.products = action.payload;
+    },
+
+    updateProduct(state, action) {
       state.products = action.payload;
     },
   },
 });
 
-export const { addItem, removeItem } = productsSlice.actions;
+export const { getProducts, addProduct, removeProduct, updateProduct } =
+  productsSlice.actions;
 export default productsSlice.reducer;
