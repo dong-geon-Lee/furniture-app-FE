@@ -20,6 +20,18 @@ export interface IProductProps {
   productId: number;
 }
 
+export interface IProductState {
+  name: string;
+  description: string;
+  price: string;
+  imageURL: string;
+  category: string;
+}
+
+export interface IProductsProps {
+  products: IProductProps[];
+}
+
 export interface IPrductButtonProps {
   handleCategorySelect: (category: string) => void;
   selectedCategory: string;
