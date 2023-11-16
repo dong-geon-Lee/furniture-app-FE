@@ -108,6 +108,38 @@ const Carts = () => {
     }
   };
 
+  const requestPay = () => {
+    const { IMP }: any = window;
+
+    IMP.init("imp91560302");
+    IMP.request_pay(
+      {
+        pg: "kakaopay.TC0ONETIME",
+        pay_method: "card", // 생략가
+        merchant_uid: "order_no_0006", // 상점에서 생성한 고유 주문번호
+        name: "주문명:결제테스트",
+        amount: 1004,
+        buyer_email: "test@portone.io",
+        buyer_name: "구매자이름",
+        buyer_tel: "010-1234-5678",
+        buyer_addr: "서울특별시 강남구 삼성동",
+        buyer_postcode: "123-456",
+        m_redirect_url: "https://www.naver.com/",
+      },
+      async function (rsp: any) {
+        // rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+        // 이후 API를 호출해서 DB에 저장할 수 있다.
+        if (rsp.success) {
+          console.log(rsp);
+          const response = await axios.get("http://localhost:5000/carts");
+          console.log(response.data);
+        } else {
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
+        }
+      }
+    );
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("http://localhost:5000/carts/me", {
@@ -204,7 +236,9 @@ const Carts = () => {
             <S.H2>Total:</S.H2>
             <S.H1 className="cart__price">$ {totalPrice}</S.H1>
           </S.Div>
-          <S.Button className="cart__checkout">Check out</S.Button>
+          <S.Button className="cart__checkout" onClick={() => requestPay()}>
+            Check out
+          </S.Button>
         </S.Div>
       </S.Section>
     </S.Container>
