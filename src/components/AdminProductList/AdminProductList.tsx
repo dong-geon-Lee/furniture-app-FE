@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+
 import Box from "@mui/material/Box";
-// import Button from "@mui/material/Button";
-// import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
@@ -12,59 +13,28 @@ import {
   GridRowModes,
   DataGrid,
   GridColDef,
-  // GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-// import {
-//   randomCreatedDate,
-//   randomTraderName,
-//   randomId,
-//   randomArrayItem,
-// } from "@mui/x-data-grid-generator";
-import axios from "axios";
 
-// const roles = ["All", "Chair", "Table", "Armchair", "Bed"];
-// const randomRole = () => {
-//   return randomArrayItem(roles);
-// };
+import axios from "axios";
+import {
+  removeProduct,
+  updateProduct,
+} from "../../store/features/products/productsSlice";
 
 const initialRows: GridRowsProp = [];
 
-// interface EditToolbarProps {
-//   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-//   setRowModesModel: (
-//     newModel: (oldModel: GridRowModesModel) => GridRowModesModel
-//   ) => void;
-// }
-
-// function EditToolbar(props: EditToolbarProps) {
-//   const { setRows, setRowModesModel } = props;
-
-//   const handleClick = () => {
-//     const id = randomId();
-//     setRows((oldRows) => [...oldRows, { id, name: "", age: "", isNew: true }]);
-//     setRowModesModel((oldModel) => ({
-//       ...oldModel,
-//       [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
-//     }));
-//   };
-
-//   return (
-//     <GridToolbarContainer>
-//       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-//         Add record
-//       </Button>
-//     </GridToolbarContainer>
-//   );
-// }
-
 const AdminProductList = () => {
+  const { products } = useSelector((state: RootState) => state.products);
+
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
+  const dispatch = useDispatch();
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
@@ -87,6 +57,7 @@ const AdminProductList = () => {
     try {
       await axios.delete(`http://localhost:5000/products/${id}`);
       setRows(rows.filter((row) => row.id !== id));
+      dispatch(removeProduct(rows.filter((row) => row.id !== id)));
     } catch (error) {
       console.error(error);
     }
@@ -108,6 +79,9 @@ const AdminProductList = () => {
     try {
       await axios.patch(`http://localhost:5000/products/${newRow.id}`, newRow);
       setRows(rows.map((row) => (row.id === newRow.id ? newRow : row)));
+      dispatch(
+        updateProduct(rows.map((row) => (row.id === newRow.id ? newRow : row)))
+      );
       return newRow;
     } catch (error) {
       console.error(error);
@@ -209,12 +183,10 @@ const AdminProductList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("http://localhost:5000/products");
-      const datas = response.data;
-      console.log(datas);
-      setRows(datas);
+      setRows(response.data);
     };
     fetchData();
-  }, []);
+  }, [products]);
 
   return (
     <Box
@@ -238,11 +210,6 @@ const AdminProductList = () => {
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        slots={
-          {
-            // toolbar: EditToolbar,
-          }
-        }
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
