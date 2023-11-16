@@ -12,6 +12,7 @@ import Favorite from "../pages/Favorite/Favorite";
 import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 import PublicRoute from "../components/PublicRoute/PublicRoute";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
+import Payment from "../pages/Payments/Payments";
 
 const AppRoutes = () => {
   return useRoutes([
@@ -76,6 +77,14 @@ const AppRoutes = () => {
       element: (
         <Layout>
           <Carts />
+        </Layout>
+      ),
+    },
+    {
+      path: "payments",
+      element: (
+        <Layout>
+          <Payment />
         </Layout>
       ),
     },
