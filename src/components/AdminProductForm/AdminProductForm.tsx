@@ -1,6 +1,4 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
-import { IProductProps } from "../../@types";
-import axios from "axios";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,11 +6,19 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Alert, Backdrop, CircularProgress } from "@mui/material";
 
+import { IProductState } from "../../@types";
+import axios from "axios";
+
 import * as S from "./styles";
+import { useDispatch } from "react-redux";
+import {
+  addProduct,
+  getProducts,
+} from "../../store/features/products/productsSlice";
 
 const AdminProductForm = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [productInfo, setProductInfo] = useState<IProductProps>({
+  const [productInfo, setProductInfo] = useState<IProductState>({
     name: "",
     description: "",
     price: "",
@@ -22,6 +28,8 @@ const AdminProductForm = () => {
 
   const [open, setOpen] = useState(false);
   const [activeAlert, setActiveAlert] = useState(false);
+
+  const dispatch = useDispatch();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setProductInfo({ ...productInfo, [e.target.name]: e.target.value });
@@ -44,19 +52,30 @@ const AdminProductForm = () => {
     if (selectedFile) formData.append("file", selectedFile);
 
     try {
-      const data = await axios.post("http://localhost:5000/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       const productData = {
         name: productInfo.name,
         description: productInfo.description,
         price: Number(productInfo.price),
-        imageURL: `https://furniture-bucket.s3.ap-northeast-2.amazonaws.com/${data.data?.id}`, // 이미지 파일의 이름을 imageURL로 설정
+        imageURL: `https://furniture-bucket.s3.ap-northeast-2.amazonaws.com/${response.data?.id}`,
         category: productInfo.category,
       };
 
-      await axios.post("http://localhost:5000/products", productData);
+      const { data } = await axios.post(
+        "http://localhost:5000/products",
+        productData
+      );
+
+      console.log(data);
+
+      dispatch(addProduct(data));
 
       setSelectedFile(null);
       setProductInfo({
@@ -70,6 +89,14 @@ const AdminProductForm = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const response = await axios.get("http://localhost:5000/products");
+      dispatch(getProducts(response.data));
+    };
+    fetchDatas();
+  }, [dispatch]);
 
   useEffect(() => {
     if (open) {
