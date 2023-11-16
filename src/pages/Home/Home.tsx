@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
+
 import { RootState } from "../../store";
+import { getUser } from "../../store/features/users/usersSlice";
+import { getProducts } from "../../store/features/products/productsSlice";
 import {
   addItem,
   getItems,
@@ -12,19 +14,19 @@ import {
 import { ICartItem, IProductProps } from "../../@types";
 import { VariantType, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
+import axios from "axios";
 
 import ProductButton from "../../components/ProductButton/ProductButton";
 import Header from "../../components/Header/Header";
 import Navigation from "../../components/Navigation/Navigation";
 
-import axios from "axios";
 import * as S from "./styles";
 import * as A from "../../assets";
-import { getUser } from "../../store/features/users/usersSlice";
 
 const Home = () => {
   const { token, user } = useSelector((state: RootState) => state.users);
-  const [products, setProducts] = useState<IProductProps[]>([]);
+  const { products } = useSelector((state: RootState) => state.products);
+
   const [filteredProducts, setFilteredProducts] = useState<IProductProps[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
@@ -71,14 +73,13 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/products");
-        const datas = response.data;
-        setProducts(datas);
+        dispatch(getProducts(response.data));
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const filtered =
