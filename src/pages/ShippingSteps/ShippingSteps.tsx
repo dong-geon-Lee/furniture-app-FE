@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "./styles";
 
 import Box from "@mui/material/Box";
@@ -17,6 +17,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { totalCart } from "../../store/features/carts/cartsSlice";
+import { getUser } from "../../store/features/users/usersSlice";
+import { RootState } from "../../store";
 
 const steps = [
   {
@@ -38,23 +43,29 @@ const steps = [
 ];
 
 const ShippingSteps = () => {
-  const [orderInfo, setOrderInfo] = useState<any>({
-    phone: "",
-    address: "",
-    postcode: "",
-    methord: "카카오페이",
-  });
+  const { token, user } = useSelector((state: RootState) => state.users);
+  const { totalPrice, shipping, cartItems } = useSelector(
+    (state: RootState) => state.carts
+  );
 
   const [activeStep, setActiveStep] = useState(0);
+  const [orderInfo, setOrderInfo] = useState<any>({
+    address: "",
+    postcode: "",
+    method: "",
+    userPhone: "",
+  });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrderInfo({ ...orderInfo, [e.target.name]: e.target.value });
   };
 
-  const handleNext = () => {
+  const handleNext = (finalStep: boolean) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (finalStep) handleSubmit();
   };
 
   const handleBack = () => {
@@ -69,7 +80,54 @@ const ShippingSteps = () => {
     navigate("/payments");
   };
 
+  const handleSubmit = async () => {
+    console.log("작동");
+    const response = await axios.post("http://localhost:5000/shippings", {
+      address: orderInfo.address,
+      postcode: parseInt(orderInfo.postcode),
+      method: orderInfo.method,
+      userPhone: orderInfo.userPhone,
+      userName: user.name,
+      userEmail: user.email,
+      productPrice: totalPrice,
+      productShip: shipping,
+      productTotal: totalPrice + shipping,
+    });
+
+    console.log(response.data);
+  };
+
+  const formattedPrice = new Intl.NumberFormat("ko-KR");
+
   console.log(orderInfo);
+
+  // useEffect(() => {
+  //   const fetchDatas = async () => {
+  //     const response = await axios.get("http://localhost:5000/carts/me", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     const total = response.data.reduce(
+  //       (acc: number, cur: any) => acc + cur.product.price,
+  //       0
+  //     );
+
+  //     dispatch(totalCart(total));
+  //     console.log(totalPrice);
+  //   };
+  //   fetchDatas();
+  // }, [dispatch, token, cartItems, totalPrice]);
+
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const { data } = await axios.get("http://localhost:5000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      dispatch(getUser(data));
+    };
+    fetchDatas();
+  }, [dispatch, token]);
 
   return (
     <S.Container>
@@ -79,23 +137,28 @@ const ShippingSteps = () => {
           activeStep={activeStep}
           orientation="vertical"
           sx={{
+            p: "2rem",
+
             ".css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active": {
-              fontSize: "2rem",
+              fontSize: "1.8rem",
+            },
+            ".css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed": {
+              fontSize: "1.8rem",
             },
             ".css-117w1su-MuiStepIcon-text": {
-              fontSize: "1.6rem",
+              fontSize: "1.8rem",
             },
+            ".css-14cbqj5-MuiStepLabel-root .css-1hv8oq8-MuiStepLabel-label.Mui-active":
+              { fontSize: "1.4rem" },
             ".css-8t49rw-MuiStepConnector-line": {
               minHeight: "9rem",
             },
             ".css-1hv8oq8-MuiStepLabel-label.Mui-completed": {
-              fontSize: "1.6rem",
+              fontSize: "1.4rem",
               lineHeight: "2rem",
             },
-            ".css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed": {
-              fontSize: "2rem",
-            },
-            p: "2rem",
+
+            ".css-1hv8oq8-MuiStepLabel-label": { fontSize: "1.2rem" },
           }}
         >
           {steps.map((step, index) => (
@@ -123,21 +186,22 @@ const ShippingSteps = () => {
                   <>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">이름</S.Label>
-                      <S.P className="contents__text">홍길동</S.P>
+                      <S.P className="contents__text">{user?.name}</S.P>
                     </S.Div>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">이메일</S.Label>
-                      <S.P className="contents__text">test@gmail.com</S.P>
+                      <S.P className="contents__text">{user?.email}</S.P>
                     </S.Div>
 
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">전화번호</S.Label>
                       <S.Input
+                        autoComplete="off"
                         type="text"
                         variant="outlined"
                         className="contents__input"
-                        name="phone"
-                        value={orderInfo.phone}
+                        name="userPhone"
+                        value={orderInfo.userPhone}
                         onChange={onChange}
                         placeholder="ex) 010-1234-5678"
                       />
@@ -148,6 +212,7 @@ const ShippingSteps = () => {
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">주소</S.Label>
                       <S.Input
+                        autoComplete="off"
                         type="text"
                         variant="outlined"
                         className="contents__input"
@@ -160,6 +225,7 @@ const ShippingSteps = () => {
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">우편번호</S.Label>
                       <S.Input
+                        autoComplete="off"
                         type="text"
                         variant="outlined"
                         className="contents__input"
@@ -176,19 +242,25 @@ const ShippingSteps = () => {
                       <S.Label className="contents__label-price">
                         상품가격
                       </S.Label>
-                      <S.P className="contents__price">18,000원</S.P>
+                      <S.P className="contents__price">
+                        {formattedPrice.format(totalPrice)}원
+                      </S.P>
                     </S.Div>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label-price">
                         배송비
                       </S.Label>
-                      <S.P className="contents__price">2,000원</S.P>
+                      <S.P className="contents__price">
+                        {formattedPrice.format(shipping)}원
+                      </S.P>
                     </S.Div>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label-price">
                         총 결제금액
                       </S.Label>
-                      <S.P className="contents__price">20,000원</S.P>
+                      <S.P className="contents__price">
+                        {formattedPrice.format(totalPrice + shipping)}원
+                      </S.P>
                     </S.Div>
                   </>
                 ) : (
@@ -198,8 +270,8 @@ const ShippingSteps = () => {
                         <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
                         <RadioGroup
                           aria-labelledby="demo-controlled-radio-buttons-group"
-                          name="methord"
-                          value={orderInfo.methord}
+                          name="method"
+                          value={orderInfo.method}
                           onChange={onChange}
                         >
                           <FormControlLabel
@@ -223,7 +295,7 @@ const ShippingSteps = () => {
                   <div>
                     <Button
                       variant="contained"
-                      onClick={handleNext}
+                      onClick={() => handleNext(index === steps.length - 1)}
                       sx={{ mt: 1, mr: 1, fontFamily: "inherit" }}
                     >
                       {index === steps.length - 1 ? "완료" : "계속하기"}
@@ -258,10 +330,10 @@ const ShippingSteps = () => {
               alignItems: "center",
               justifyItems: "center",
               alignContent: "center",
-              m: "5rem 2rem",
+              m: "8rem 2rem",
             }}
           >
-            <S.H1>모든 정보가 입력되었습니다!</S.H1>
+            <S.H1>배송정보 입력완료!</S.H1>
             <S.Div>
               <Button
                 onClick={handleReset}
