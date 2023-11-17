@@ -69,6 +69,8 @@ const Home = () => {
     );
   };
 
+  const formattedPrice = new Intl.NumberFormat("ko-KR");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -173,7 +175,7 @@ const Home = () => {
       </S.LogoBox>
 
       <S.Grid>
-        {filteredProducts.map((product, index) => (
+        {filteredProducts.map((product: any, index) => (
           <S.GridItem key={index}>
             <S.GridImg
               src={product.imageURL}
@@ -184,7 +186,7 @@ const Home = () => {
             <S.GridLabel onClick={() => handleProductItem(product.id)}>
               {product.name}
             </S.GridLabel>
-            <S.GridText>$ {product.price}</S.GridText>
+            <S.GridText>{formattedPrice.format(product.price)} 원</S.GridText>
 
             <S.Button
               disabled={cartItems.some(
