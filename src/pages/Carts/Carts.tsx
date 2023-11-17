@@ -206,7 +206,7 @@ const Carts = () => {
           </S.Div>
           <S.Button
             className="cart__checkout"
-            onClick={() => navigate("/payments")}
+            onClick={() => navigate("/shipping")}
           >
             Check out
           </S.Button>

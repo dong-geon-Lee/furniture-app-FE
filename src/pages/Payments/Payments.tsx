@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import TopHeader from "../../components/TopHeader/TopHeader";
 
 import * as S from "./styles";
@@ -16,9 +17,9 @@ const Payment = () => {
         merchant_uid: "order_no_0006", // 상점에서 생성한 고유 주문번호
         name: "주문명:결제테스트",
         amount: 1004,
-        buyer_email: "test@portone.io",
         buyer_name: "구매자이름",
         buyer_tel: "010-1234-5678",
+        buyer_email: "test@portone.io",
         buyer_addr: "서울특별시 강남구 삼성동",
         buyer_postcode: "123-456",
         m_redirect_url: "https://www.naver.com/",
@@ -39,7 +40,7 @@ const Payment = () => {
 
   return (
     <S.Container>
-      <TopHeader path="carts" title="결제하기" />
+      <TopHeader path="shipping" title="결제하기" />
 
       <S.Section className="payment__address">
         <S.Div className="payment__header">
@@ -47,11 +48,11 @@ const Payment = () => {
         </S.Div>
         <S.Div className="payment__userInfo">
           <S.Div className="payment__header">
-            <S.P className="">홍길동</S.P>
+            <S.P>홍길동</S.P>
             <S.Img src={A.edit} alt={A.edit} className="edit__logo" />
           </S.Div>
-          <S.P className="">010-1234-5678</S.P>
-          <S.P className="">test@gmail.com</S.P>
+          <S.P>010-1234-5678</S.P>
+          <S.P>test@gmail.com</S.P>
         </S.Div>
       </S.Section>
 
@@ -64,7 +65,7 @@ const Payment = () => {
             <S.P className="payment__name">홍길동</S.P>
             <S.Img src={A.edit} alt={A.edit} className="edit__logo" />
           </S.Div>
-          <S.P className="">010-1234-5678</S.P>
+          <S.P>010-1234-5678</S.P>
           <S.P>서울특별시 서대문구 성산로7길 89-8 (연희동)</S.P>
           <S.P>주식회사 이케아</S.P>
           <S.P>(03706)</S.P>
