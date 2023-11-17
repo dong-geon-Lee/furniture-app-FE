@@ -61,8 +61,8 @@ export const Div = styled.div`
 
   &.cart__results {
     position: fixed;
-    bottom: 18rem;
-    height: 11rem;
+    bottom: 20%;
+    /* height: 11rem; */
   }
 
   &.cart__total {
@@ -189,7 +189,7 @@ export const Span = styled.span`
 export const Section = styled.section`
   padding: 0 2rem;
 
-  height: 55rem;
+  height: 39rem;
   overflow-y: scroll;
   overflow-x: hidden;
 

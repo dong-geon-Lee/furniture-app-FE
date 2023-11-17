@@ -65,7 +65,7 @@ export const P = styled.p`
   font-family: inherit;
   font-weight: 400;
   letter-spacing: 0.2rem;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 `;
 
 export const H1 = styled.h1`
