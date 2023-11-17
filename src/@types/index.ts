@@ -66,6 +66,7 @@ export interface IProductItem {
 export interface ICartState {
   cartItems: ICartItem[];
   totalPrice: number;
+  shipping: number;
 }
 
 export interface IGridLogoProps {
