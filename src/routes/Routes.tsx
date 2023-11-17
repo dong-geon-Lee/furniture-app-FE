@@ -13,6 +13,7 @@ import PrivateRoute from "../components/PrivateRoute/PrivateRoute";
 import PublicRoute from "../components/PublicRoute/PublicRoute";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import Payment from "../pages/Payments/Payments";
+import ShippingSteps from "../pages/ShippingSteps/ShippingSteps";
 
 const AppRoutes = () => {
   return useRoutes([
@@ -77,6 +78,14 @@ const AppRoutes = () => {
       element: (
         <Layout>
           <Carts />
+        </Layout>
+      ),
+    },
+    {
+      path: "shipping",
+      element: (
+        <Layout>
+          <ShippingSteps />
         </Layout>
       ),
     },
