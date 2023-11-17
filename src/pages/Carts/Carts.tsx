@@ -18,9 +18,11 @@ import * as C from "../../constants";
 
 const Carts = () => {
   const { token } = useSelector((state: RootState) => state.users);
-  const { cartItems: cartDatas, totalPrice } = useSelector(
-    (state: RootState) => state.carts
-  );
+  const {
+    cartItems: cartDatas,
+    totalPrice,
+    shipping,
+  } = useSelector((state: RootState) => state.carts);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -108,6 +110,8 @@ const Carts = () => {
     }
   };
 
+  const formattedPrice = new Intl.NumberFormat("ko-KR");
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("http://localhost:5000/carts/me", {
@@ -160,7 +164,7 @@ const Carts = () => {
       </S.Div>
 
       <S.Section className="cart__list">
-        {cartDatas.map((cartItem) => (
+        {cartDatas.map((cartItem: any) => (
           <S.Box key={cartItem?.id}>
             <S.Main className="grid__box">
               <S.Img
@@ -170,7 +174,7 @@ const Carts = () => {
               />
               <S.Div className="cart__info">
                 <S.Label>{cartItem.name}</S.Label>
-                <S.Span>$ {cartItem.price}</S.Span>
+                <S.Span>{formattedPrice.format(cartItem.price)} 원</S.Span>
                 <S.Div className="cart__menu">
                   <S.Button
                     className="cart__btn"
@@ -201,14 +205,28 @@ const Carts = () => {
         ))}
         <S.Div className="cart__results">
           <S.Div className="cart__total">
-            <S.H2>Total:</S.H2>
-            <S.H1 className="cart__price">$ {totalPrice}</S.H1>
+            <S.H2>상품가격:</S.H2>
+            <S.H1 className="cart__price">
+              {formattedPrice.format(totalPrice)} 원
+            </S.H1>
+          </S.Div>
+          <S.Div className="cart__total">
+            <S.H2>배송비:</S.H2>
+            <S.H1 className="cart__price">
+              {formattedPrice.format(shipping)} 원
+            </S.H1>
+          </S.Div>
+          <S.Div className="cart__total">
+            <S.H2>총 결제금액:</S.H2>
+            <S.H1 className="cart__price">
+              {formattedPrice.format(totalPrice + shipping)} 원
+            </S.H1>
           </S.Div>
           <S.Button
             className="cart__checkout"
             onClick={() => navigate("/shipping")}
           >
-            Check out
+            결제 진행하기
           </S.Button>
         </S.Div>
       </S.Section>
@@ -217,3 +235,12 @@ const Carts = () => {
 };
 
 export default Carts;
+
+// 상품가격
+// 18,000원
+
+// 배송비
+// 2,000원
+
+// 총 결제금액
+// 20,000원
