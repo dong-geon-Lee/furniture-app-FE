@@ -4,6 +4,7 @@ import { ICartItem, ICartState } from "../../../@types";
 const initialState: ICartState = {
   cartItems: [],
   totalPrice: 0,
+  shipping: 2000,
 };
 
 const cartsSlice = createSlice({
