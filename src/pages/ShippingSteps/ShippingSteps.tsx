@@ -18,10 +18,13 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import axios from "axios";
-import { totalCart } from "../../store/features/carts/cartsSlice";
+
 import { getUser } from "../../store/features/users/usersSlice";
 import { RootState } from "../../store";
+import { getShippings } from "../../store/features/shippings/shippingsSlice";
+import { totalCart } from "../../store/features/carts/cartsSlice";
 
 const steps = [
   {
@@ -44,18 +47,20 @@ const steps = [
 
 const ShippingSteps = () => {
   const { token, user } = useSelector((state: RootState) => state.users);
-  const { totalPrice, shipping, cartItems } = useSelector(
+  const { totalPrice, shipping } = useSelector(
     (state: RootState) => state.carts
   );
+  const { shippingInfo } = useSelector((state: RootState) => state.shippings);
 
   const [activeStep, setActiveStep] = useState(0);
   const [orderInfo, setOrderInfo] = useState<any>({
     address: "",
     postcode: "",
-    method: "",
+    method: "카카오페이",
     userPhone: "",
   });
 
+  const formattedPrice = new Intl.NumberFormat("ko-KR");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,8 +77,10 @@ const ShippingSteps = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     setActiveStep(0);
+    await axios.delete(`http://localhost:5000/shippings/${shippingInfo?.id}`);
+    dispatch(getShippings(null));
   };
 
   const handleNavigate = () => {
@@ -81,7 +88,8 @@ const ShippingSteps = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("작동");
+    if (shippingInfo?.id) return;
+
     const response = await axios.post("http://localhost:5000/shippings", {
       address: orderInfo.address,
       postcode: parseInt(orderInfo.postcode),
@@ -92,39 +100,44 @@ const ShippingSteps = () => {
       productPrice: totalPrice,
       productShip: shipping,
       productTotal: totalPrice + shipping,
+      userId: user.id,
     });
 
-    console.log(response.data);
+    dispatch(getShippings(response.data));
   };
 
-  const formattedPrice = new Intl.NumberFormat("ko-KR");
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const response = await axios.get("http://localhost:5000/carts/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  console.log(orderInfo);
-
-  // useEffect(() => {
-  //   const fetchDatas = async () => {
-  //     const response = await axios.get("http://localhost:5000/carts/me", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-
-  //     const total = response.data.reduce(
-  //       (acc: number, cur: any) => acc + cur.product.price,
-  //       0
-  //     );
-
-  //     dispatch(totalCart(total));
-  //     console.log(totalPrice);
-  //   };
-  //   fetchDatas();
-  // }, [dispatch, token, cartItems, totalPrice]);
+      const total = response.data.reduce(
+        (acc: number, cur: any) => acc + cur.product.price * cur.quantity,
+        0
+      );
+      dispatch(totalCart(total));
+    };
+    fetchDatas();
+  }, [dispatch, totalPrice, token]);
 
   useEffect(() => {
     const fetchDatas = async () => {
       const { data } = await axios.get("http://localhost:5000/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       dispatch(getUser(data));
+    };
+    fetchDatas();
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const response = await axios.get("http://localhost:5000/shippings/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      dispatch(getShippings(response.data));
     };
     fetchDatas();
   }, [dispatch, token]);
@@ -192,48 +205,65 @@ const ShippingSteps = () => {
                       <S.Label className="contents__label">이메일</S.Label>
                       <S.P className="contents__text">{user?.email}</S.P>
                     </S.Div>
-
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">전화번호</S.Label>
-                      <S.Input
-                        autoComplete="off"
-                        type="text"
-                        variant="outlined"
-                        className="contents__input"
-                        name="userPhone"
-                        value={orderInfo.userPhone}
-                        onChange={onChange}
-                        placeholder="ex) 010-1234-5678"
-                      />
+                      {!shippingInfo ? (
+                        <S.Input
+                          autoComplete="off"
+                          type="text"
+                          variant="outlined"
+                          className="contents__input"
+                          name="userPhone"
+                          value={orderInfo.userPhone}
+                          onChange={onChange}
+                          placeholder="ex) 010-1234-5678"
+                        />
+                      ) : (
+                        <S.P className="contents__input">
+                          {shippingInfo.userPhone}
+                        </S.P>
+                      )}
                     </S.Div>
                   </>
                 ) : step.type === "shipping" ? (
                   <>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">주소</S.Label>
-                      <S.Input
-                        autoComplete="off"
-                        type="text"
-                        variant="outlined"
-                        className="contents__input"
-                        name="address"
-                        value={orderInfo.address}
-                        onChange={onChange}
-                        placeholder="ex) 서울특별시 마포구 양화진길"
-                      />
+                      {!shippingInfo ? (
+                        <S.Input
+                          autoComplete="off"
+                          type="text"
+                          variant="outlined"
+                          className="contents__input"
+                          name="address"
+                          value={orderInfo.address}
+                          onChange={onChange}
+                          placeholder="ex) 서울특별시 마포구 양화진길"
+                        />
+                      ) : (
+                        <S.P className="contents__input">
+                          {shippingInfo.address}
+                        </S.P>
+                      )}
                     </S.Div>
                     <S.Div className="contents__grid">
                       <S.Label className="contents__label">우편번호</S.Label>
-                      <S.Input
-                        autoComplete="off"
-                        type="text"
-                        variant="outlined"
-                        className="contents__input"
-                        name="postcode"
-                        value={orderInfo.postcode}
-                        onChange={onChange}
-                        placeholder="ex) 07800"
-                      />
+                      {!shippingInfo ? (
+                        <S.Input
+                          autoComplete="off"
+                          type="text"
+                          variant="outlined"
+                          className="contents__input"
+                          name="postcode"
+                          value={orderInfo.postcode}
+                          onChange={onChange}
+                          placeholder="ex) 07800"
+                        />
+                      ) : (
+                        <S.P className="contents__input">
+                          {shippingInfo.postcode}
+                        </S.P>
+                      )}
                     </S.Div>
                   </>
                 ) : step.type === "payment" ? (
@@ -266,27 +296,33 @@ const ShippingSteps = () => {
                 ) : (
                   <>
                     <S.Div className="contents__grid-payment">
-                      <FormControl>
-                        <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
-                        <RadioGroup
-                          aria-labelledby="demo-controlled-radio-buttons-group"
-                          name="method"
-                          value={orderInfo.method}
-                          onChange={onChange}
-                        >
-                          <FormControlLabel
-                            value="카카오페이"
-                            control={<Radio />}
-                            label="카카오페이"
-                          />
-                          <FormControlLabel
-                            value="네이버페이"
-                            control={<Radio />}
-                            label="네이버페이"
-                            disabled
-                          />
-                        </RadioGroup>
-                      </FormControl>
+                      {!shippingInfo ? (
+                        <FormControl>
+                          <FormLabel id="demo-controlled-radio-buttons-group"></FormLabel>
+                          <RadioGroup
+                            aria-labelledby="demo-controlled-radio-buttons-group"
+                            name="method"
+                            value={orderInfo.method}
+                            onChange={onChange}
+                          >
+                            <FormControlLabel
+                              value="카카오페이"
+                              control={<Radio />}
+                              label="카카오페이"
+                            />
+                            <FormControlLabel
+                              value="네이버페이"
+                              control={<Radio />}
+                              label="네이버페이"
+                              disabled
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      ) : (
+                        <S.P className="contents__input">
+                          {shippingInfo.method}
+                        </S.P>
+                      )}
                     </S.Div>
                   </>
                 )}
