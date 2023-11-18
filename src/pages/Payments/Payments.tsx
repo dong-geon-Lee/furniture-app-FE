@@ -5,6 +5,9 @@ import TopHeader from "../../components/TopHeader/TopHeader";
 import * as S from "./styles";
 import * as A from "../../assets";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { totalCart } from "../../store/features/carts/cartsSlice";
 
 const Payment = () => {
   const [shippingInfo, setShippingInfo] = useState({
@@ -20,6 +23,15 @@ const Payment = () => {
     userPhone: "",
   });
 
+  const { token } = useSelector((state: RootState) => state.users);
+  const { shippingInfo: shipInfo } = useSelector(
+    (state: RootState) => state.shippings
+  );
+  const { totalPrice, shipping } = useSelector(
+    (state: RootState) => state.carts
+  );
+
+  const dispatch = useDispatch();
   const randomNum = Math.floor(Math.random() * 90000000) + 1;
   const formattedPrice = new Intl.NumberFormat("ko-KR");
 
@@ -30,16 +42,16 @@ const Payment = () => {
     IMP.request_pay(
       {
         pg: "kakaopay.TC0ONETIME",
-        pay_method: "card", // 생략가
-        merchant_uid: `order_no_${randomNum}`, // 상점에서 생성한 고유 주문번호
+        pay_method: "card",
+        merchant_uid: `order_no_${shipInfo?.id}`,
         name: "주문명:결제테스트",
-        amount: 1004,
-        buyer_name: "구매자이름",
-        buyer_tel: "010-1234-5678",
-        buyer_email: "test@portone.io",
-        buyer_addr: "서울특별시 강남구 삼성동",
-        buyer_postcode: "123-456",
-        m_redirect_url: "https://www.naver.com/",
+        amount: `${shipInfo?.productTotal}`,
+        buyer_name: `${shipInfo?.userName}`,
+        buyer_tel: `${shipInfo?.userPhone}`,
+        buyer_email: `${shipInfo?.userEmail}`,
+        buyer_addr: `${shipInfo?.address}`,
+        buyer_postcode: `${shipInfo?.postcode}`,
+        // m_redirect_url: "https://www.naver.com/",
       },
       async function (rsp: any) {
         // rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
@@ -57,14 +69,28 @@ const Payment = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:5000/shippings");
-      setShippingInfo(response.data[0]);
+      const response = await axios.get("http://localhost:5000/shippings/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setShippingInfo(response.data);
     };
-
     fetchData();
-  }, []);
+  }, [token]);
 
-  console.log(shippingInfo);
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const response = await axios.get("http://localhost:5000/carts/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const total = response.data.reduce(
+        (acc: number, cur: any) => acc + cur.product.price * cur.quantity,
+        0
+      );
+      dispatch(totalCart(total));
+    };
+    fetchDatas();
+  }, [dispatch, totalPrice, token]);
 
   return (
     <S.Container>
@@ -115,16 +141,16 @@ const Payment = () => {
         <S.Div className="payment__results">
           <S.Div className="payment__box">
             <S.P>상품가격</S.P>
-            <S.H1>{formattedPrice.format(shippingInfo?.productPrice)} 원</S.H1>
+            <S.H1>{formattedPrice.format(totalPrice)} 원</S.H1>
           </S.Div>
           <S.Div className="payment__box">
             <S.P>배송비</S.P>
-            <S.H1>{formattedPrice.format(shippingInfo?.productShip)} 원</S.H1>
+            <S.H1>{formattedPrice.format(shipping)} 원</S.H1>
           </S.Div>
           <hr />
           <S.Div className="payment__box last">
             <S.P>총 결제금액</S.P>
-            <h1>{formattedPrice.format(shippingInfo?.productTotal)} 원</h1>
+            <h1>{formattedPrice.format(totalPrice + shipping)} 원</h1>
           </S.Div>
         </S.Div>
       </S.Section>
