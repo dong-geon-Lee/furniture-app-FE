@@ -44,3 +44,6 @@ export { default as xIcon } from "./Shape.svg";
 export { default as back2 } from "./Frame 14.svg";
 
 export { default as edit } from "./edit-2.svg";
+export { default as groups } from "./Groups.svg";
+export { default as success } from "./checkmark-circle-fill.svg";
+export { default as circle } from "./success_circle.svg";
