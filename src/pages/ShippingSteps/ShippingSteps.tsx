@@ -56,8 +56,8 @@ const ShippingSteps = () => {
   const [orderInfo, setOrderInfo] = useState<any>({
     address: "",
     postcode: "",
-    method: "카카오페이",
     userPhone: "",
+    method: "카카오페이",
   });
 
   const formattedPrice = new Intl.NumberFormat("ko-KR");
@@ -116,6 +116,7 @@ const ShippingSteps = () => {
         (acc: number, cur: any) => acc + cur.product.price * cur.quantity,
         0
       );
+
       dispatch(totalCart(total));
     };
     fetchDatas();
