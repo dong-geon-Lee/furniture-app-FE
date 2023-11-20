@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { ITopHeaderProps } from "../../@types";
 
 import * as S from "./styles";
 import * as A from "../../assets";
 import * as C from "../../constants";
 
-const TopHeader = ({ path, title }: any) => {
+const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
+
+const TopHeader = ({ path, title }: ITopHeaderProps) => {
   const navigate = useNavigate();
-  const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
   const koreanTime = koreanTimeFormatter.format(new Date());
 
   return (
@@ -17,15 +19,19 @@ const TopHeader = ({ path, title }: any) => {
       </S.Div>
 
       <S.Div className="box">
-        <S.Img
-          src={A.back2}
-          alt="back2"
-          className="logo"
-          onClick={() => navigate(`/${path}`)}
-        />
-        <S.Div>
-          <S.H1 className="title">{title}</S.H1>
-        </S.Div>
+        {title !== "congrats" && (
+          <>
+            <S.Img
+              src={A.back2}
+              alt="back2"
+              className="logo"
+              onClick={() => navigate(`/${path}`)}
+            />
+            <S.Div>
+              <S.H1 className="title">{title}</S.H1>
+            </S.Div>
+          </>
+        )}
         <S.Div />
       </S.Div>
     </>
