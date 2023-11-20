@@ -1,13 +1,20 @@
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
+import { RootState } from "../../store";
+import {
+  removeItem,
+  totalCart,
+  totalCartQty,
+} from "../../store/features/carts/cartsSlice";
+import { getShippings } from "../../store/features/shippings/shippingsSlice";
+
+import axios from "axios";
 import TopHeader from "../../components/TopHeader/TopHeader";
 
 import * as S from "./styles";
 import * as A from "../../assets";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { totalCart } from "../../store/features/carts/cartsSlice";
 
 const Payment = () => {
   const [shippingInfo, setShippingInfo] = useState({
@@ -23,48 +30,72 @@ const Payment = () => {
     userPhone: "",
   });
 
+  const navigate = useNavigate();
+
   const { token } = useSelector((state: RootState) => state.users);
   const { shippingInfo: shipInfo } = useSelector(
     (state: RootState) => state.shippings
   );
-  const { totalPrice, shipping } = useSelector(
+  const { totalPrice, shipping, totalQty } = useSelector(
     (state: RootState) => state.carts
   );
 
   const dispatch = useDispatch();
-  const randomNum = Math.floor(Math.random() * 90000000) + 1;
+  const randomNum = Math.floor(Math.random() * 1000000);
   const formattedPrice = new Intl.NumberFormat("ko-KR");
 
   const requestPay = () => {
     const { IMP }: any = window;
+    const datas = {
+      pg: "kakaopay.TC0ONETIME",
+      pay_method: "card",
+      merchant_uid: `order_no_${shipInfo?.id + randomNum}`,
+      name: "주문명:결제테스트",
+      amount: `${totalPrice + shipping}`,
+      buyer_name: `${shipInfo?.userName}`,
+      buyer_tel: `${shipInfo?.userPhone}`,
+      buyer_email: `${shipInfo?.userEmail}`,
+      buyer_addr: `${shipInfo?.address}`,
+      buyer_postcode: `${shipInfo?.postcode}`,
+    };
 
     IMP.init("imp91560302");
-    IMP.request_pay(
-      {
-        pg: "kakaopay.TC0ONETIME",
-        pay_method: "card",
-        merchant_uid: `order_no_${shipInfo?.id}`,
-        name: "주문명:결제테스트",
-        amount: `${shipInfo?.productTotal}`,
-        buyer_name: `${shipInfo?.userName}`,
-        buyer_tel: `${shipInfo?.userPhone}`,
-        buyer_email: `${shipInfo?.userEmail}`,
-        buyer_addr: `${shipInfo?.address}`,
-        buyer_postcode: `${shipInfo?.postcode}`,
-        // m_redirect_url: "https://www.naver.com/",
-      },
-      async function (rsp: any) {
-        // rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
-        // 이후 API를 호출해서 DB에 저장할 수 있다.
-        if (rsp.success) {
-          console.log(rsp);
-          const response = await axios.get("http://localhost:5000/carts");
-          console.log(response.data);
-        } else {
-          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-        }
+    IMP.request_pay(datas, async function (rsp: any) {
+      if (rsp.success) {
+        const datas = {
+          impUid: rsp.imp_uid,
+          merchantUid: rsp.merchant_uid,
+          buyerAddr: rsp.buyer_addr,
+          buyerEmail: rsp.buyer_email,
+          buyerName: rsp.buyer_name,
+          buyerTel: rsp.buyer_tel,
+          buyerPostcode: rsp.buyer_postcode,
+          paidAmount: rsp.paid_amount,
+          paidAt: rsp.paid_at,
+          payMethod: rsp.pay_method,
+          status: rsp.status,
+          userId: shipInfo.user.id,
+          quantity: totalQty,
+        };
+
+        await axios.post("http://localhost:5000/orders", datas);
+        alert("결제가 완료되었습니다");
+
+        await axios.delete(
+          `http://localhost:5000/carts/me/${shipInfo.user?.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        dispatch(removeItem([]));
+        dispatch(totalCart(0));
+        dispatch(totalCartQty(0));
+
+        await axios.delete(`http://localhost:5000/shippings/${shipInfo.id}`);
+        dispatch(getShippings(null));
+        navigate("/congrats");
+      } else {
+        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
       }
-    );
+    });
   };
 
   useEffect(() => {
@@ -72,10 +103,11 @@ const Payment = () => {
       const response = await axios.get("http://localhost:5000/shippings/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      dispatch(getShippings(response.data));
       setShippingInfo(response.data);
     };
     fetchData();
-  }, [token]);
+  }, [token, dispatch]);
 
   useEffect(() => {
     const fetchDatas = async () => {
@@ -87,7 +119,14 @@ const Payment = () => {
         (acc: number, cur: any) => acc + cur.product.price * cur.quantity,
         0
       );
+
+      const totalQty = response.data.reduce(
+        (acc: number, cur: any) => acc + cur.quantity,
+        0
+      );
+
       dispatch(totalCart(total));
+      dispatch(totalCartQty(totalQty));
     };
     fetchDatas();
   }, [dispatch, totalPrice, token]);
