@@ -72,3 +72,8 @@ export interface ICartState {
 export interface IGridLogoProps {
   $active: boolean;
 }
+
+export interface ITopHeaderProps {
+  path?: string;
+  title?: string;
+}
