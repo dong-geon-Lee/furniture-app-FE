@@ -1,9 +1,17 @@
+import { useNavigate } from "react-router-dom";
+
 import TopHeader from "../../components/TopHeader/TopHeader";
 
 import * as S from "./styles";
 import * as A from "../../assets";
 
 const Congrats = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path: string) => {
+    navigate(`/${path}`);
+  };
+
   return (
     <S.Container>
       <TopHeader title="congrats" />
@@ -17,8 +25,15 @@ const Congrats = () => {
         Your order will be delivered soon. Thank you for choosing our app!
       </S.P>
       <S.Div>
-        <S.Button className="order--btn">Track your orders</S.Button>
-        <S.Button className="back--btn">Back to Home</S.Button>
+        <S.Button
+          className="order--btn"
+          onClick={() => handleNavigate("orders")}
+        >
+          Track your orders
+        </S.Button>
+        <S.Button className="back--btn" onClick={() => handleNavigate("home")}>
+          Back to Home
+        </S.Button>
       </S.Div>
     </S.Container>
   );
