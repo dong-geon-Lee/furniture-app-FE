@@ -14,6 +14,8 @@ import PublicRoute from "../components/PublicRoute/PublicRoute";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import Payment from "../pages/Payments/Payments";
 import ShippingSteps from "../pages/ShippingSteps/ShippingSteps";
+import Congrats from "../pages/Congrats/Congrats";
+import Orders from "../pages/Orders/Orders";
 
 const AppRoutes = () => {
   return useRoutes([
@@ -94,6 +96,22 @@ const AppRoutes = () => {
       element: (
         <Layout>
           <Payment />
+        </Layout>
+      ),
+    },
+    {
+      path: "congrats",
+      element: (
+        <Layout>
+          <Congrats />
+        </Layout>
+      ),
+    },
+    {
+      path: "orders",
+      element: (
+        <Layout>
+          <Orders />
         </Layout>
       ),
     },
