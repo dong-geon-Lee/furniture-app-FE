@@ -85,6 +85,7 @@ export const Button = styled.button`
     font-weight: 600;
     font-style: normal;
     line-height: normal;
+    cursor: pointer;
   }
 
   &.back--btn {
@@ -102,5 +103,6 @@ export const Button = styled.button`
     background-color: #fff;
     margin-top: 2.5rem;
     text-transform: uppercase;
+    cursor: pointer;
   }
 `;
