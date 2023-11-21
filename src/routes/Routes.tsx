@@ -16,6 +16,7 @@ import Payment from "../pages/Payments/Payments";
 import ShippingSteps from "../pages/ShippingSteps/ShippingSteps";
 import Congrats from "../pages/Congrats/Congrats";
 import Orders from "../pages/Orders/Orders";
+import OrderDetails from "../pages/OrderDetails/OrderDetails";
 
 const AppRoutes = () => {
   return useRoutes([
@@ -112,6 +113,14 @@ const AppRoutes = () => {
       element: (
         <Layout>
           <Orders />
+        </Layout>
+      ),
+    },
+    {
+      path: "orders/:id",
+      element: (
+        <Layout>
+          <OrderDetails />
         </Layout>
       ),
     },
