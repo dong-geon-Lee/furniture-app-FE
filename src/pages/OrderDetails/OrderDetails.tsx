@@ -19,10 +19,7 @@ const OrderDetails = () => {
   const order = location.state;
 
   const formattedPrice = new Intl.NumberFormat("ko-KR");
-  const { id, cartItems, quantity, order: orderData } = orderInfo;
-  console.log(cartItems, orderData);
-
-  console.log(orderData);
+  const { order: orderData } = orderInfo;
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
