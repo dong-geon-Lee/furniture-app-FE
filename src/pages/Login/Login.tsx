@@ -70,13 +70,13 @@ const Login = () => {
         <S.Hr />
       </S.Div>
       <S.Box>
-        <S.H1>Hello !</S.H1>
-        <S.H1 className="h1">Welcome Back</S.H1>
+        <S.H1>안녕하세요!</S.H1>
+        <S.H1 className="h1">돌아오신걸 환영합니다</S.H1>
       </S.Box>
       <S.Form onSubmit={onSubmit}>
         <S.Div className="input__box">
           <S.Text variant="h6" component="p">
-            Email
+            이메일
           </S.Text>
           <S.Input
             type="email"
@@ -88,7 +88,7 @@ const Login = () => {
         </S.Div>
         <S.Div className="input__box">
           <S.Text variant="h6" component="p">
-            Password
+            비밀번호
           </S.Text>
           <S.Input
             type={showPassword ? "text" : "password"}
@@ -108,9 +108,9 @@ const Login = () => {
         </S.Div>
 
         <S.Footer>
-          <S.Link to="/">Forgot Password</S.Link>
-          <S.Button type="submit">Log in</S.Button>
-          <S.H2 to="/signup">Sign up</S.H2>
+          <S.Link to="/"></S.Link>
+          <S.Button type="submit">로그인</S.Button>
+          <S.H2 to="/signup">회원가입</S.H2>
         </S.Footer>
       </S.Form>
     </S.Container>
