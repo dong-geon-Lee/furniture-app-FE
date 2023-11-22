@@ -77,4 +77,5 @@ export interface IGridLogoProps {
 export interface ITopHeaderProps {
   path?: string;
   title?: string;
+  location?: any;
 }
