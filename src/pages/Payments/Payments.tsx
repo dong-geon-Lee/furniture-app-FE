@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "../../store";
 import {
+  getItems,
   removeItem,
   totalCart,
   totalCartQty,
@@ -15,6 +16,7 @@ import TopHeader from "../../components/TopHeader/TopHeader";
 
 import * as S from "./styles";
 import * as A from "../../assets";
+import { getUser } from "../../store/features/users/usersSlice";
 
 const Payment = () => {
   const [shippingInfo, setShippingInfo] = useState({
@@ -32,13 +34,15 @@ const Payment = () => {
 
   const navigate = useNavigate();
 
-  const { token } = useSelector((state: RootState) => state.users);
+  const { token, user } = useSelector((state: RootState) => state.users);
   const { shippingInfo: shipInfo } = useSelector(
     (state: RootState) => state.shippings
   );
-  const { totalPrice, shipping, totalQty } = useSelector(
+  const { totalPrice, shipping, totalQty, cartItems } = useSelector(
     (state: RootState) => state.carts
   );
+
+  console.log(cartItems, totalPrice, shipping, user);
 
   const dispatch = useDispatch();
   const randomNum = Math.floor(Math.random() * 1000000);
@@ -78,7 +82,21 @@ const Payment = () => {
           quantity: totalQty,
         };
 
-        await axios.post("http://localhost:5000/orders", datas);
+        const response = await axios.post(
+          "http://localhost:5000/orders",
+          datas
+        );
+
+        if (response.data) {
+          console.log(response.data.id, "데이터 이쌎ㄴㅎ아ㄴ");
+          await axios.post("http://localhost:5000/orderDetails", {
+            userId: user.id,
+            cartItems,
+            quantity: response.data.quantity,
+            orderId: response.data.id,
+          });
+        }
+
         alert("결제가 완료되었습니다");
 
         await axios.delete(
@@ -91,12 +109,23 @@ const Payment = () => {
 
         await axios.delete(`http://localhost:5000/shippings/${shipInfo.id}`);
         dispatch(getShippings(null));
+
         navigate("/congrats");
       } else {
         alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
       }
     });
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get("http://localhost:5000/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(getUser(response.data));
+    };
+    fetchData();
+  }, [token, dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,6 +154,7 @@ const Payment = () => {
         0
       );
 
+      dispatch(getItems(response.data));
       dispatch(totalCart(total));
       dispatch(totalCartQty(totalQty));
     };
