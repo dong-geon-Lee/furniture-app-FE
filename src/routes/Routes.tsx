@@ -17,6 +17,7 @@ import ShippingSteps from "../pages/ShippingSteps/ShippingSteps";
 import Congrats from "../pages/Congrats/Congrats";
 import Orders from "../pages/Orders/Orders";
 import OrderDetails from "../pages/OrderDetails/OrderDetails";
+import Profile from "../pages/Profile/Profile";
 
 const AppRoutes = () => {
   return useRoutes([
@@ -121,6 +122,14 @@ const AppRoutes = () => {
       element: (
         <Layout>
           <OrderDetails />
+        </Layout>
+      ),
+    },
+    {
+      path: "profile",
+      element: (
+        <Layout>
+          <Profile />
         </Layout>
       ),
     },
