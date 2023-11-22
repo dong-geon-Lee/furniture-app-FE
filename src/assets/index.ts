@@ -47,3 +47,7 @@ export { default as edit } from "./edit-2.svg";
 export { default as groups } from "./Groups.svg";
 export { default as success } from "./checkmark-circle-fill.svg";
 export { default as circle } from "./success_circle.svg";
+
+export { default as logout } from "./Logout.svg";
+export { default as avarta } from "./Ellipse 30.jpg";
+export { default as right_arrow } from "./Frame 15.svg";
