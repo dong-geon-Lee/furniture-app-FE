@@ -14,8 +14,6 @@ const ordersSlice = createSlice({
     },
 
     getOrderInfo(state, action) {
-      const datas = action.payload;
-      console.log(datas);
       state.orderInfo = action.payload;
     },
   },

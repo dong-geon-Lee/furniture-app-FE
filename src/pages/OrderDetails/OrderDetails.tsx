@@ -68,6 +68,7 @@ const OrderDetails = () => {
           <S.H2 className="header__text bold">{orderData?.buyerEmail}</S.H2>
         </S.Div>
       </S.Section>
+
       <S.Section className="order__info">
         <S.Div className="order__height">
           <S.H1 className="order__text">상품 정보</S.H1>
