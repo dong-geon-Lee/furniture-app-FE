@@ -21,6 +21,7 @@ export const Div = styled.div`
     justify-content: space-between;
     padding: 0 2rem;
     margin-bottom: 3rem;
+    width: 100%;
   }
 `;
 

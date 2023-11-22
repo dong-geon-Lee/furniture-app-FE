@@ -7,7 +7,7 @@ import * as C from "../../constants";
 
 const koreanTimeFormatter = new Intl.DateTimeFormat("ko-KR", C.options);
 
-const TopHeader = ({ path, title }: ITopHeaderProps) => {
+const TopHeader = ({ path, title, location }: ITopHeaderProps) => {
   const navigate = useNavigate();
   const koreanTime = koreanTimeFormatter.format(new Date());
 
@@ -22,7 +22,7 @@ const TopHeader = ({ path, title }: ITopHeaderProps) => {
         {title !== "congrats" && (
           <>
             <S.Img
-              src={A.back2}
+              src={A.search}
               alt="back2"
               className="logo"
               onClick={() => navigate(`/${path}`)}
@@ -32,7 +32,17 @@ const TopHeader = ({ path, title }: ITopHeaderProps) => {
             </S.Div>
           </>
         )}
-        <S.Div />
+
+        {location.pathname === "/profile" ? (
+          <S.Img
+            src={A.logout}
+            alt={A.logout}
+            className="logo"
+            onClick={() => navigate(`/login`)}
+          />
+        ) : (
+          <S.Div />
+        )}
       </S.Div>
     </>
   );
