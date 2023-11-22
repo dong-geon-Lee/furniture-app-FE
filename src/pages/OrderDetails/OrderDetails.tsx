@@ -15,20 +15,15 @@ const OrderDetails = () => {
 
   console.log(order, location.pathname);
 
-  // useEffect(() => {
-  //   const fetchDatas = async () => {
-  //     const response = await axios.get("http://localhost:5000/orders");
-  //     const { data } = await axios.get("http://localhost:5000/users/me", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-
-  //     const selectedData = response.data.filter(
-  //       (item: any) => item.user.id === data.id
-  //     );
-  //     console.log(selectedData);
-  //   };
-  //   fetchDatas();
-  // }, []);
+  useEffect(() => {
+    const fetchDatas = async () => {
+      const response = await axios.get(
+        `http://localhost:5000/orderDetails/${order.id}`
+      );
+      console.log(response.data);
+    };
+    fetchDatas();
+  }, [order.id]);
 
   return (
     <S.Container>
