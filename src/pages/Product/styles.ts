@@ -180,18 +180,18 @@ export const Button = styled.button`
 
   &.product__cart {
     border-radius: 0.8rem;
-    background: #242424;
+    background: ${(props) => (props.disabled ? "#efefef" : " #242424")};
     box-shadow: 0 1rem 2rem 0 rgba(48, 48, 48, 0.25);
     width: 100%;
     height: 6rem;
-    color: #fff;
+    color: ${(props) => (props.disabled ? "#242424" : " #fff")};
     text-align: center;
     font-family: Nunito Sans;
     font-size: 2rem;
     font-weight: 600;
     line-height: normal;
     border: none;
-    cursor: pointer;
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   }
 
   &.product__markers {
