@@ -11,6 +11,11 @@ const TopHeader = ({ path, title, location }: ITopHeaderProps) => {
   const navigate = useNavigate();
   const koreanTime = koreanTimeFormatter.format(new Date());
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate(`/login`);
+  };
+
   return (
     <>
       <S.Div className="header">
@@ -38,7 +43,7 @@ const TopHeader = ({ path, title, location }: ITopHeaderProps) => {
             src={A.logout}
             alt={A.logout}
             className="logo"
-            onClick={() => navigate(`/login`)}
+            onClick={() => logout()}
           />
         ) : (
           <S.Div />
