@@ -190,13 +190,13 @@ const Home = () => {
 
             <S.Button
               disabled={cartItems.some(
-                (cartList) => cartList.productId === product.id
+                (cartList: any) => cartList.productId === product.id
               )}
               onClick={() => handleClickVariant("success", product.id)}
             >
               <S.GridLogo
                 $active={cartItems.some(
-                  (cartItem) => cartItem?.productId === product.id
+                  (cartItem: any) => cartItem?.productId === product.id
                 )}
                 src={A.frame}
                 alt="frame"
