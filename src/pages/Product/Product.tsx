@@ -6,17 +6,19 @@ import Header from "../../components/Header/Header";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import { RootState } from "../../store";
-import { getItems } from "../../store/features/carts/cartsSlice";
+import { addItem, getItems } from "../../store/features/carts/cartsSlice";
+import { getUser } from "../../store/features/users/usersSlice";
 
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 import * as S from "./styles";
 import * as A from "../../assets";
-import { getUser } from "../../store/features/users/usersSlice";
 
 const Product = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const location = useLocation();
   const currentProduct = location.state;
@@ -24,9 +26,8 @@ const Product = () => {
   const { cartItems } = useSelector((state: RootState) => state.carts);
   const { user, token } = useSelector((state: RootState) => state.users);
 
-  console.log("cartItems before .find call:", cartItems);
   const findCartId = cartItems?.find(
-    (cartItem) => cartItem?.product?.id === currentProduct?.id
+    (cartItem: any) => cartItem?.product?.id === currentProduct?.id
   );
 
   const handleIncToCart = async (qty: number) => {
@@ -39,7 +40,7 @@ const Product = () => {
       );
 
       const datas = response.data;
-      const newCarts = cartItems.map((cartItem) =>
+      const newCarts = cartItems.map((cartItem: any) =>
         cartItem.id === datas.id ? (cartItem = datas) : cartItem
       );
 
@@ -50,10 +51,6 @@ const Product = () => {
     }
   };
 
-  console.log(user);
-  console.log(currentProduct);
-  console.log(cartItems);
-
   const handleAddCart = async () => {
     const response = await axios.post("http://localhost:5000/carts", {
       userId: user?.id,
@@ -61,6 +58,13 @@ const Product = () => {
       quantity: 1,
     });
 
+    dispatch(addItem(response.data));
+    fetchData();
+    enqueueSnackbar("장바구니로 이동되었습니다!", { variant: "success" });
+  };
+
+  const fetchData = async () => {
+    const response = await axios.get("http://localhost:5000/carts");
     dispatch(getItems(response.data));
   };
 
@@ -102,14 +106,22 @@ const Product = () => {
           <S.Div className="product__qty">
             <S.Button
               className="product__count"
-              onClick={() => handleIncToCart(findCartId?.quantity + 1)}
+              onClick={() =>
+                handleIncToCart(
+                  findCartId !== undefined ? findCartId.quantity + 1 : 0
+                )
+              }
             >
               <S.Img src={A.btn1} alt="btn1" />
             </S.Button>
             <S.H2 className="product__text">{findCartId?.quantity || 1}</S.H2>
             <S.Button
               className="product__count"
-              onClick={() => handleIncToCart(findCartId?.quantity - 1)}
+              onClick={() =>
+                handleIncToCart(
+                  findCartId !== undefined ? findCartId.quantity + 1 : 0
+                )
+              }
             >
               <S.Img src={A.btn2} alt="btn2" />
             </S.Button>
@@ -138,7 +150,7 @@ const Product = () => {
             <S.Button
               className="product__cart"
               disabled={cartItems.some(
-                (cartItem) => cartItem.product?.id === currentProduct?.id
+                (cartItem: any) => cartItem.product?.id === currentProduct.id
               )}
               onClick={() => handleAddCart()}
             >
