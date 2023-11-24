@@ -22,7 +22,7 @@ const TopHeader = ({ path, title, location }: ITopHeaderProps) => {
         {title !== "congrats" && (
           <>
             <S.Img
-              src={A.search}
+              src={A.back}
               alt="back2"
               className="logo"
               onClick={() => navigate(`/${path}`)}
@@ -33,7 +33,7 @@ const TopHeader = ({ path, title, location }: ITopHeaderProps) => {
           </>
         )}
 
-        {location.pathname === "/profile" ? (
+        {location?.pathname === "/profile" ? (
           <S.Img
             src={A.logout}
             alt={A.logout}
