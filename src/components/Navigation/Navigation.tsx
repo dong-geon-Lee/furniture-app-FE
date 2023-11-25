@@ -61,7 +61,7 @@ const Navigation = () => {
         />
         <BottomNavigationAction
           label="Notification"
-          value="notification"
+          value="orders"
           icon={<NotificationsIcon />}
           sx={{
             ".css-i4bv87-MuiSvgIcon-root": {
